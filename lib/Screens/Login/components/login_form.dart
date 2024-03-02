@@ -1,13 +1,13 @@
 // login_form.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/Screens/Signup/signup_screen.dart';
+import 'package:flutter_auth/services/authentication_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
-import '../../Signup/signup_screen.dart';
-import 'package:flutter_auth/services/authentication_service.dart';
-import 'package:flutter_auth/auth/auth_exception.dart'; // Import the AuthException class
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  const LoginForm({Key? key}) : super(key: key);
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -16,11 +16,13 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final AuthenticationService _authService = AuthenticationService();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   late String email;
   late String password;
 
   String? emailError;
   String? passwordError;
+  String? loginError;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +38,11 @@ class _LoginFormState extends State<LoginForm> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
-              } else if (!isValidEmail(value)) {
-                return 'Enter a valid email address';
+              } else if (!_isValidEmail(value)) {
+                loginError = 'Enter a valid email address';
+                return loginError;
               }
-              return emailError;
+              return null;
             },
             decoration: InputDecoration(
               hintText: "Your email",
@@ -61,7 +64,7 @@ class _LoginFormState extends State<LoginForm> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your password';
                 } else if (value.length < 8) {
-                  return 'Password must be at least 6 characters long';
+                  return 'Password must be at least 8 characters long';
                 }
                 return passwordError;
               },
@@ -81,15 +84,12 @@ class _LoginFormState extends State<LoginForm> {
               if (formKey.currentState?.validate() ?? false) {
                 formKey.currentState!.save();
 
-                try {
-                  final userCredential = await _authService.signInWithEmailAndPassword(email, password);
-                  if (userCredential.user != null) {
-                    print("Login successful: ${userCredential.user!.email}");
-                    // TODO: Navigate or update UI accordingly
-                  }
-                } on AuthException catch (e) {
-                  handleAuthException(e);
-                  // TODO: Show an error message to the user
+                final user =
+                    await _authService.signInMethod(email, password);
+                if (user != null) {
+                  Fluttertoast.showToast(msg: "Login is Successfully");
+                  // TODO: Navigate or update UI accordingly
+                  //Navigator.push(context, MaterialPageRoute(builder: (_)=>HomePage()))
                 }
               }
             },
@@ -113,33 +113,7 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  void handleAuthException(AuthException e) {
-    switch (e.code) {
-      case 'invalid-email':
-        setState(() {
-          emailError = 'Invalid email address';
-          passwordError = null;
-        });
-        break;
-      case 'user-not-found':
-        setState(() {
-          emailError = 'User not found';
-          passwordError = null;
-        });
-        break;
-      case 'wrong-password':
-        setState(() {
-          passwordError = 'Incorrect password';
-          emailError = null;
-        });
-        break;
-      // Add more cases as needed
-      default:
-        break;
-    }
-  }
-
-  bool isValidEmail(String email) {
+  bool _isValidEmail(String email) {
     // You can implement your email format validation logic here
     // For a simple check, we're using a regular expression
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$';

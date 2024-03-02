@@ -1,80 +1,26 @@
 {
   "project_info": {
-    "project_number": "999095028568",
-    "firebase_url": "https://liftguard-pro-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "liftguard-pro",
-    "storage_bucket": "liftguard-pro.appspot.com"
+    "project_number": "654194180458",
+    "project_id": "lift-access-control",
+    "storage_bucket": "lift-access-control.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:999095028568:android:abbdbdb62494cc11edb32d",
+        "mobilesdk_app_id": "1:654194180458:android:d68e8cdffc28dc31f8a513",
         "android_client_info": {
           "package_name": "com.example.flutter_auth"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "999095028568-rd0auuet45qsk1r9mfd8rgitn23r45el.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD0wIINECX18wN_rqS4eTyif1OsvSNtwhc"
+          "current_key": "AIzaSyD9QSTkTQNcMGfni3NpnidQNYBEVaiZjxs"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "999095028568-rd0auuet45qsk1r9mfd8rgitn23r45el.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "999095028568-68lt8aefdbgaqarnt01uvq2oabklcm18.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.liftguardPro.RunnerTests"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:999095028568:android:545375e9a45ce200edb32d",
-        "android_client_info": {
-          "package_name": "com.example.liftguard_pro"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "999095028568-rd0auuet45qsk1r9mfd8rgitn23r45el.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD0wIINECX18wN_rqS4eTyif1OsvSNtwhc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "999095028568-rd0auuet45qsk1r9mfd8rgitn23r45el.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "999095028568-68lt8aefdbgaqarnt01uvq2oabklcm18.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.liftguardPro.RunnerTests"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

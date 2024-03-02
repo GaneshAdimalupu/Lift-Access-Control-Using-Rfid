@@ -44,44 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDKMZ-vDKN14ae88lC95e-CYoFyPe2AtLA',
-    appId: '1:999095028568:web:51bdcc329eddb9b5edb32d',
-    messagingSenderId: '999095028568',
-    projectId: 'liftguard-pro',
-    authDomain: 'liftguard-pro.firebaseapp.com',
-    databaseURL: 'https://liftguard-pro-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'liftguard-pro.appspot.com',
-    measurementId: 'G-16N7D9P53T',
+    apiKey: 'AIzaSyCKB7wsjX7h36SeXBccMEQCZY6O1Rye8Yc',
+    appId: '1:654194180458:web:4d5adb23151dc19ef8a513',
+    messagingSenderId: '654194180458',
+    projectId: 'lift-access-control',
+    authDomain: 'lift-access-control.firebaseapp.com',
+    storageBucket: 'lift-access-control.appspot.com',
+    measurementId: 'G-0HW3DZ3YM7',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD0wIINECX18wN_rqS4eTyif1OsvSNtwhc',
-    appId: '1:999095028568:android:abbdbdb62494cc11edb32d',
-    messagingSenderId: '999095028568',
-    projectId: 'liftguard-pro',
-    databaseURL: 'https://liftguard-pro-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'liftguard-pro.appspot.com',
+    apiKey: 'AIzaSyD9QSTkTQNcMGfni3NpnidQNYBEVaiZjxs',
+    appId: '1:654194180458:android:d68e8cdffc28dc31f8a513',
+    messagingSenderId: '654194180458',
+    projectId: 'lift-access-control',
+    storageBucket: 'lift-access-control.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAFce9r3AtrasiMfqBVObfC6csTj3QMBPA',
-    appId: '1:999095028568:ios:f87415a890a900aeedb32d',
-    messagingSenderId: '999095028568',
-    projectId: 'liftguard-pro',
-    databaseURL: 'https://liftguard-pro-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'liftguard-pro.appspot.com',
-    iosClientId: '999095028568-saco2j0gbk90h97mf29ba7o6545uh3ul.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCMwkbYFkiZuNpZn62rFtJJEGFXwCpWcAA',
+    appId: '1:654194180458:ios:7e489ccb2bd36784f8a513',
+    messagingSenderId: '654194180458',
+    projectId: 'lift-access-control',
+    storageBucket: 'lift-access-control.appspot.com',
     iosBundleId: 'com.example.flutterAuth',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAFce9r3AtrasiMfqBVObfC6csTj3QMBPA',
-    appId: '1:999095028568:ios:f87415a890a900aeedb32d',
-    messagingSenderId: '999095028568',
-    projectId: 'liftguard-pro',
-    databaseURL: 'https://liftguard-pro-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'liftguard-pro.appspot.com',
-    iosClientId: '999095028568-saco2j0gbk90h97mf29ba7o6545uh3ul.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCMwkbYFkiZuNpZn62rFtJJEGFXwCpWcAA',
+    appId: '1:654194180458:ios:7e489ccb2bd36784f8a513',
+    messagingSenderId: '654194180458',
+    projectId: 'lift-access-control',
+    storageBucket: 'lift-access-control.appspot.com',
     iosBundleId: 'com.example.flutterAuth',
   );
 }

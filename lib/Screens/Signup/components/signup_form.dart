@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/services/authentication_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
-import 'package:flutter_auth/auth/auth_exception.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -22,6 +22,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String? emailError;
   String? passwordError;
+  String? signUpError;
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +39,10 @@ class _SignUpFormState extends State<SignUpForm> {
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
               } else if (!isValidEmail(value)) {
-                return 'Enter a valid email address';
+                signUpError = 'Enter a valid email address';
+                return signUpError;
               }
-              return emailError;
+              return null;
             },
             decoration: InputDecoration(
               hintText: "Your email",
@@ -82,15 +84,11 @@ class _SignUpFormState extends State<SignUpForm> {
               if (formKey.currentState?.validate() ?? false) {
                 formKey.currentState!.save();
 
-                try {
-                  final user = await _authService.signUpWithEmailAndPassword(email, password);
-                  if (user != null) {
-                    print("Sign up successful: ${user.email}");
-                    // TODO: Navigate or update UI accordingly
-                  }
-                } on AuthException catch (e) {
-                  handleAuthException(e);
-                  // TODO: Show an error message to the user
+                final user = await _authService.signUpWithEmailAndPassword(
+                    email, password);
+                if (user != null) {
+                  Fluttertoast.showToast(msg: "User is Successfully Created");
+                  // TODO: Navigate or update UI accordingly
                 }
               }
             },
@@ -113,30 +111,6 @@ class _SignUpFormState extends State<SignUpForm> {
         ],
       ),
     );
-  }
-
-  void handleAuthException(AuthException e) {
-    switch (e.code) {
-      case 'invalid-email':
-        setState(() {
-          emailError = 'Invalid email address';
-          passwordError = null;
-        });
-        break;
-      case 'email-already-in-use':
-        setState(() {
-          emailError = 'Email already in use';
-          passwordError = null;
-        });
-        break;
-      // Add more cases as needed
-      default:
-      setState(() {
-        emailError = 'An error occurred: ${e.message}';
-        passwordError = null;
-      });
-        break;
-    }
   }
 
   bool isValidEmail(String email) {

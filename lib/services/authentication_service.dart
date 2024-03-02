@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationService {
@@ -10,29 +11,45 @@ class AuthenticationService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 
-
-    Future<UserCredential> signInWithEmailAndPassword(
-      String email, String password) async {
-    return await _auth.signInWithEmailAndPassword(
+  
+ Future<User?> signInMethod(String email, String password) async {
+  try {
+    UserCredential credential = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
+    return credential.user;
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      Fluttertoast.showToast(msg: "User not found. Please check your email.");
+      return null; // Return null to indicate that the sign-in failed
+    } else if (e.code == 'wrong-password') {
+      Fluttertoast.showToast(msg: "Incorrect password. Please try again.");
+      return null; // Return null to indicate that the sign-in failed
+    } else {
+      Fluttertoast.showToast(msg: "Some error occurred: ${e.message}");
+    }
   }
+  return null;
+}
 
   Future<User?> signUpWithEmailAndPassword(
-    String email, String password) async {
+      String email, String password) async {
     try {
-      UserCredential authResult =
-       await _auth.createUserWithEmailAndPassword(
+      UserCredential authResult = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       User? user = authResult.user;
       return user;
-    } catch (e) {
-      print('Error during sign up: $e');
-      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        Fluttertoast.showToast(msg: "Email already exists");
+      } else {
+        Fluttertoast.showToast(msg: "Error occurred: ${e.code}");
+      }
     }
+    return null;
   }
 
   Future<void> prepareAuthEvent() async {
@@ -48,7 +65,8 @@ class AuthenticationService {
         );
         return userCredential.user;
       } else {
-        final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+        final GoogleSignInAccount? googleSignInAccount =
+            await _googleSignIn.signIn();
 
         if (googleSignInAccount == null) {
           return null;
@@ -62,12 +80,14 @@ class AuthenticationService {
           idToken: googleSignInAuthentication.idToken,
         );
 
-        final UserCredential authResult = await _auth.signInWithCredential(credential);
+        final UserCredential authResult =
+            await _auth.signInWithCredential(credential);
 
         return authResult.user;
       }
     } catch (error) {
       print('Error signing in with Google: $error');
+      Fluttertoast.showToast(msg: "Error signing in with Google");
       return null;
     }
   }
