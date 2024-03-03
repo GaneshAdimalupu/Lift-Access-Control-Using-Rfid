@@ -9,29 +9,27 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthenticationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-
-  
- Future<User?> signInMethod(String email, String password) async {
-  try {
-    UserCredential credential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return credential.user;
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      Fluttertoast.showToast(msg: "User not found. Please check your email.");
-      return null; // Return null to indicate that the sign-in failed
-    } else if (e.code == 'wrong-password') {
-      Fluttertoast.showToast(msg: "Incorrect password. Please try again.");
-      return null; // Return null to indicate that the sign-in failed
-    } else {
-      Fluttertoast.showToast(msg: "Some error occurred: ${e.message}");
+  Future<User?> signInMethod(String email, String password) async {
+    try {
+      UserCredential credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return credential.user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        // Handle user not found separately
+        Fluttertoast.showToast(msg: "User not found. Please check your email.");
+      } else if (e.code == 'wrong-password') {
+        // Handle wrong password separately
+        Fluttertoast.showToast(msg: "Please check your password.");
+      } else {
+        // Handle other errors
+        Fluttertoast.showToast(msg: "Please Check Email / Password");
+      }
     }
+    return null;
   }
-  return null;
-}
 
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
@@ -86,7 +84,6 @@ class AuthenticationService {
         return authResult.user;
       }
     } catch (error) {
-      print('Error signing in with Google: $error');
       Fluttertoast.showToast(msg: "Error signing in with Google");
       return null;
     }

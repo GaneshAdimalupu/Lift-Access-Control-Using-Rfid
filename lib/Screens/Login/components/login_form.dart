@@ -1,5 +1,6 @@
 // login_form.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/Screens/Main%20Screen/MainScreen.dart';
 import 'package:flutter_auth/Screens/Signup/signup_screen.dart';
 import 'package:flutter_auth/services/authentication_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,7 +8,7 @@ import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+  const LoginForm({super.key});
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -16,13 +17,13 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final AuthenticationService _authService = AuthenticationService();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
 
   late String email;
   late String password;
 
-  String? emailError;
-  String? passwordError;
-  String? loginError;
+  bool obscurePassword = true;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +40,13 @@ class _LoginFormState extends State<LoginForm> {
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
               } else if (!_isValidEmail(value)) {
-                loginError = 'Enter a valid email address';
-                return loginError;
+                return 'Enter a valid email address';
               }
               return null;
             },
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Your email",
-              errorText: emailError,
-              prefixIcon: const Padding(
+              prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.person),
               ),
@@ -56,8 +55,9 @@ class _LoginFormState extends State<LoginForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
+              controller: _passwordController,
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: obscurePassword,
               cursorColor: kPrimaryColor,
               onSaved: (value) => password = value!,
               validator: (value) {
@@ -66,11 +66,18 @@ class _LoginFormState extends State<LoginForm> {
                 } else if (value.length < 8) {
                   return 'Password must be at least 8 characters long';
                 }
-                return passwordError;
+                return null;
               },
               decoration: InputDecoration(
                 hintText: "Your password",
-                errorText: passwordError,
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                  icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off),
+                ),
                 prefixIcon: const Padding(
                   padding: EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.lock),
@@ -80,20 +87,38 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: defaultPadding),
           ElevatedButton(
-            onPressed: () async {
+            onPressed: isLoading ? null : () async {
               if (formKey.currentState?.validate() ?? false) {
+                setState(() {
+                  isLoading = true;
+                });
+
                 formKey.currentState!.save();
 
-                final user =
-                    await _authService.signInMethod(email, password);
-                if (user != null) {
-                  Fluttertoast.showToast(msg: "Login is Successfully");
-                  // TODO: Navigate or update UI accordingly
-                  //Navigator.push(context, MaterialPageRoute(builder: (_)=>HomePage()))
+                try {
+                  final user = await _authService.signInMethod(email, password);
+                  if (user != null) {
+                    Fluttertoast.showToast(msg: "Login is Successful");
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) =>   const MainScreen()),
+                    );
+                  } else {
+                    Fluttertoast.showToast(msg: "Invalid credentials");
+                  }
+                } catch (e) {
+                  print("Login Error: $e");
+                  Fluttertoast.showToast(msg: "An error occurred during login");
+                } finally {
+                  setState(() {
+                    isLoading = false;
+                  });
                 }
               }
             },
-            child: Text("Login".toUpperCase()),
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : Text("Login".toUpperCase()),
           ),
           const SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
