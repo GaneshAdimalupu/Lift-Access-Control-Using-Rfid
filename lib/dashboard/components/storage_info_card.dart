@@ -49,7 +49,7 @@ class StorageInfoCard extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall!
-                        .copyWith(color: Colors.white70),
+                        .copyWith(color: const Color.fromARGB(255, 0, 0, 0)),
                   ),
                 ],
               ),

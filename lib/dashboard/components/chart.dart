@@ -30,7 +30,7 @@ class Chart extends StatelessWidget {
                 Text(
                   "29.1",
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: Colors.white,
+                        color: const Color.fromARGB(255, 0, 0, 0),
                         fontWeight: FontWeight.w600,
                         height: 0.5,
                       ),
