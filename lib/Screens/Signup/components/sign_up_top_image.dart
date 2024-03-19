@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants.dart';
-
 class SignUpScreenTopImage extends StatelessWidget {
   const SignUpScreenTopImage({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,12 @@ class SignUpScreenTopImage extends StatelessWidget {
             const Spacer(),
             Expanded(
               flex: 8,
-              child: SvgPicture.asset("assets/icons/signup.svg"),
+              // Adjust width and height to reduce the size of the SVG image
+              child: SvgPicture.asset(
+                "assets/icons/signup.svg",
+                width: 200, // Adjust width as needed
+                height: 200, // Adjust height as needed
+              ),
             ),
             const Spacer(),
           ],
