@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/Screens/Welcome/components/login_signup_btn.dart';
 
 import '../../components/background.dart';
 import '../../responsive.dart';
-import 'components/login_signup_btn.dart';
 import 'components/welcome_image.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+  const WelcomeScreen({super.key}); // Corrected super.key
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class WelcomeScreen extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: 450,
-                        child: LoginAndSignupBtn(),
+                        child: WelcomeBtn(),
                       ),
                     ],
                   ),
@@ -43,7 +43,7 @@ class WelcomeScreen extends StatelessWidget {
 
 class MobileWelcomeScreen extends StatelessWidget {
   const MobileWelcomeScreen({
-    super.key,
+    super.key, // Corrected super.key
   });
 
   @override
@@ -57,7 +57,7 @@ class MobileWelcomeScreen extends StatelessWidget {
             Spacer(),
             Expanded(
               flex: 8,
-              child: LoginAndSignupBtn(),
+              child: WelcomeBtn(),
             ),
             Spacer(),
           ],
