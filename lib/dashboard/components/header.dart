@@ -33,42 +33,66 @@ class Header extends StatelessWidget {
     );
   }
 }
-
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: defaultPadding),
-      padding: const EdgeInsets.symmetric(
-        horizontal: defaultPadding,
-        vertical: defaultPadding / 2,
-      ),
-      decoration: BoxDecoration(
-        color: kPrimaryLightColor,
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          Image.asset(
-            "assets/images/profile_pic.png",
-            height: 38,
-          ),
-          if (!Responsive.isMobile(context))
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-              child: Text("Angelina Jolie"),
+    return GestureDetector(
+      onTap: () {
+        // Perform action when profile is tapped
+        // For example, show user details popup or navigate to a new screen
+        // You can replace the below code with your desired action
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('User Details'),
+              content: Text('Here you can display user details.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(left: defaultPadding),
+        padding: const EdgeInsets.symmetric(
+          horizontal: defaultPadding,
+          vertical: defaultPadding / 2,
+        ),
+        decoration: BoxDecoration(
+          color: kPrimaryLightColor,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: Border.all(color: Colors.white10),
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              "assets/images/profile_pic.png",
+              height: 38,
             ),
-          const Icon(Icons.keyboard_arrow_down),
-        ],
+            if (!Responsive.isMobile(context))
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+                child: Text("Angelina Jolie"),
+              ),
+            const Icon(Icons.keyboard_arrow_down),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class SearchField extends StatelessWidget {
   const SearchField({
