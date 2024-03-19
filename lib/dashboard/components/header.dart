@@ -35,8 +35,8 @@ class Header extends StatelessWidget {
 }
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,14 +49,14 @@ class ProfileCard extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('User Details'),
-              content: Text('Here you can display user details.'),
+              title: const Text('User Details'),
+              content: const Text('Here you can display user details.'),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             );

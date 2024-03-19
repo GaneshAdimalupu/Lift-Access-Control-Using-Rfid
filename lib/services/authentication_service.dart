@@ -5,10 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthenticationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn =
+      GoogleSignIn(); // Declare GoogleSignIn instance
+
   Future<User?> signInMethod(String email, String password) async {
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
@@ -32,14 +36,25 @@ class AuthenticationService {
   }
 
   Future<User?> signUpWithEmailAndPassword(
-      String email, String password) async {
+    String email,
+    String password,
+    String fullName,
+    String collegeID,
+  ) async {
     try {
       UserCredential authResult = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      User? user = authResult.user;
-      return user;
+
+      // Store additional user details in Firestore
+      await _firestore.collection('users').doc(authResult.user!.uid).set({
+        'email': email,
+        'fullName': fullName,
+        'collegeID': collegeID,
+      });
+
+      return authResult.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         Fluttertoast.showToast(msg: "Email already exists");

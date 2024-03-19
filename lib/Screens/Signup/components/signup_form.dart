@@ -1,5 +1,3 @@
-// signup_form.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/services/authentication_service.dart';
@@ -19,6 +17,8 @@ class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late String email;
   late String password;
+  late String fullName;
+  late String collegeID;
 
   String? emailError;
   String? passwordError;
@@ -53,28 +53,66 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: TextFormField(
-              textInputAction: TextInputAction.done,
-              obscureText: true,
-              cursorColor: kPrimaryColor,
-              onSaved: (value) => password = value!,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your password';
-                } else if (value.length < 6) {
-                  return 'Password must be at least 6 characters long';
-                }
-                return passwordError;
-              },
-              decoration: InputDecoration(
-                hintText: "Your password",
-                errorText: passwordError,
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
-                ),
+          const SizedBox(height: defaultPadding),
+          TextFormField(
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.next,
+            cursorColor: kPrimaryColor,
+            onSaved: (value) => fullName = value!,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your full name';
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              hintText: "Your full name",
+              prefixIcon: Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.person),
+              ),
+            ),
+          ),
+          const SizedBox(height: defaultPadding),
+          TextFormField(
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.next,
+            cursorColor: kPrimaryColor,
+            onSaved: (value) => collegeID = value!,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your college ID';
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              hintText: "Your college ID",
+              prefixIcon: Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.school),
+              ),
+            ),
+          ),
+          const SizedBox(height: defaultPadding),
+          TextFormField(
+            textInputAction: TextInputAction.done,
+            obscureText: true,
+            cursorColor: kPrimaryColor,
+            onSaved: (value) => password = value!,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password';
+              } else if (value.length < 6) {
+                return 'Password must be at least 6 characters long';
+              }
+              return passwordError;
+            },
+            decoration: InputDecoration(
+              hintText: "Your password",
+              errorText: passwordError,
+              prefixIcon: const Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.lock),
               ),
             ),
           ),
@@ -85,7 +123,11 @@ class _SignUpFormState extends State<SignUpForm> {
                 formKey.currentState!.save();
 
                 final user = await _authService.signUpWithEmailAndPassword(
-                    email, password);
+                  email,
+                  password,
+                  fullName,
+                  collegeID,
+                );
                 if (user != null) {
                   Fluttertoast.showToast(msg: "User is Successfully Created");
                   // TODO: Navigate or update UI accordingly
@@ -97,7 +139,6 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
             press: () {
-              // You can navigate to the login screen or perform any other action
               Navigator.push(
                 context,
                 MaterialPageRoute(
