@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_auth/Screens/profile_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -22,12 +23,21 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/menu_profile.svg",
-            press: () {},
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ),
+              );
+            },
           ),
           DrawerListTile(
             title: "Settings",
             svgSrc: "assets/icons/menu_setting.svg",
-            press: () {},
+            press: () {
+              // Navigate to ProfileScreen when "Profile" item is pressed
+            },
           ),
         ],
       ),
@@ -54,7 +64,8 @@ class DrawerListTile extends StatelessWidget {
       horizontalTitleGap: 0.0,
       leading: SvgPicture.asset(
         svgSrc,
-        colorFilter: const ColorFilter.mode(Color.fromARGB(255, 0, 0, 0), BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(
+            Color.fromARGB(255, 0, 0, 0), BlendMode.srcIn),
         height: 16,
       ),
       title: Text(

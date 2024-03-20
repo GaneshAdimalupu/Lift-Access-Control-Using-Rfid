@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/dashboard/components/chart.dart';
 import 'package:flutter_auth/responsive.dart';
 import '../../constants.dart';
 import 'components/header.dart';
-import 'components/recent_files.dart';
-import 'components/storage_details.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +23,16 @@ class DashboardScreen extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children: [
-                      const Chart(),
+                      // Empty container instead of Chart()
+                      Container(),
                       const SizedBox(height: defaultPadding),
-                      const RecentFiles(),
+                      // Empty container instead of RecentFiles()
+                      Container(),
                       if (Responsive.isMobile(context))
                         const SizedBox(height: defaultPadding),
-                      if (Responsive.isMobile(context)) const StorageDetails(),
+                      if (Responsive.isMobile(context))
+                        // Empty container instead of StorageDetails()
+                        Container(),
                     ],
                   ),
                 ),
@@ -39,9 +40,9 @@ class DashboardScreen extends StatelessWidget {
                   const SizedBox(width: defaultPadding),
                 // On Mobile means if the screen is less than 850 we don't want to show it
                 if (!Responsive.isMobile(context))
-                  const Expanded(
+                  Expanded(
                     flex: 2,
-                    child: StorageDetails(),
+                    child: Container(), // Empty container
                   ),
               ],
             )
