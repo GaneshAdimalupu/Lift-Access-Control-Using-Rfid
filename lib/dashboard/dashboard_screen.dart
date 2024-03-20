@@ -4,7 +4,7 @@ import '../../constants.dart';
 import 'components/header.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({Key? key});
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
