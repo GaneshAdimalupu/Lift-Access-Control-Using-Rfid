@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_auth/Screens/profile_screen.dart';
+import 'package:flutter_auth/dashboard/models/profile_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
