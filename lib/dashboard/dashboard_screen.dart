@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth/responsive.dart';
 import '../../constants.dart';
 import 'components/header.dart';
+import 'components/lift_usage_chart.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +24,7 @@ class DashboardScreen extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children: [
-                      // Empty container instead of Chart()
-                      Container(),
+                       LiftUsageChart(),
                       const SizedBox(height: defaultPadding),
                       // Empty container instead of RecentFiles()
                       Container(),
