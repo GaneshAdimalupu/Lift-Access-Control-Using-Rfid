@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Main%20Screen/MainScreen.dart';
-import 'package:flutter_auth/Screens/Welcome/welcome_screen.dart';
-import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_auth/dashboard/controller/menu_app_controller.dart';

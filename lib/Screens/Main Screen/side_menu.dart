@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/dashboard/models/lift_usage_log.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_auth/dashboard/models/profile_screen.dart';
 
@@ -16,11 +17,6 @@ class SideMenu extends StatelessWidget {
             child: Image.asset("assets/images/logo.png"),
           ),
           DrawerListTile(
-            title: "Dashboard",
-            svgSrc: "assets/icons/menu_dashboard.svg",
-            press: () {},
-          ),
-          DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/menu_profile.svg",
             press: () {
@@ -32,6 +28,20 @@ class SideMenu extends StatelessWidget {
               );
             },
           ),
+          // Inside SideMenu class
+          DrawerListTile(
+            title: "Lift Usage Log",
+            svgSrc: "assets/icons/menu_profile.svg",
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>   const LiftUsageLogScreen(),
+                ),
+              );
+            },
+          ),
+
           DrawerListTile(
             title: "Settings",
             svgSrc: "assets/icons/menu_setting.svg",

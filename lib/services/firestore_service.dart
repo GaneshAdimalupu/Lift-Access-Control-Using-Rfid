@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 class FirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -21,16 +20,6 @@ class FirestoreService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getUsers() async {
-    try {
-      QuerySnapshot querySnapshot = await _firestore.collection('users').get();
-      return querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-    } catch (e) {
-      Fluttertoast.showToast(msg: "Error retrieving users: $e");
-      return [];
-    }
-  }
-
   static Future<void> deleteUser(String userId) async {
     try {
       await _firestore.collection('users').doc(userId).delete();
@@ -40,34 +29,60 @@ class FirestoreService {
     }
   }
 
-  static Future<List<SalesData>> getLiftUsageData() async {
-    List<SalesData> liftUsageData = [];
+  static Future<void> logLiftUsage(String collegeID) async {
+    try {
+      // Add current timestamp to the lift usage collection under the corresponding user
+      await _firestore.collection('lift usage').add({
+        'collegeID': collegeID,
+        'timestamp': Timestamp.now(),
+      });
+      Fluttertoast.showToast(msg: "Lift usage logged successfully");
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Error logging lift usage: $e");
+    }
+  }
+
+  static Future<List<LiftUsage>> getLiftUsageData() async {
+    List<LiftUsage> liftUsageData = [];
 
     try {
-      QuerySnapshot querySnapshot =
-          await _firestore.collection('lift usage').get();
-      querySnapshot.docs.forEach((doc) {
+      QuerySnapshot querySnapshot = await _firestore.collection('users').get();
+      for (var doc in querySnapshot.docs) {
         // Extracting collegeID and timestamp from Firestore document
-        num collegeID = doc['collegeID'];
-        Timestamp timestamp = doc['timestamp'];
+        String collegeID = doc['collegeID'].toString(); // Convert to String
+        List<dynamic> liftUsageList = doc['liftUsage'];
 
-        // Converting timestamp to DateTime
-        DateTime date = timestamp.toDate();
-
-        // Adding data to liftUsageData list
-        liftUsageData.add(SalesData(date, collegeID));
-      });
+        for (var usage in liftUsageList) {
+          Timestamp timestamp = usage['timestamp'];
+          // Converting timestamp to DateTime
+          DateTime date = timestamp.toDate();
+          // Adding data to liftUsageData list
+          liftUsageData.add(LiftUsage(date, collegeID));
+        }
+      }
     } catch (e) {
-      print('Error retrieving lift usage data: $e');
+      Fluttertoast.showToast(msg: 'Error retrieving lift usage data: $e');
     }
 
     return liftUsageData;
   }
 }
 
-class SalesData {
-  final DateTime year;
-  final num collegeID;
+class LiftUsage {
+  final DateTime timestamp;
+  final String collegeID;
 
-  SalesData(this.year, this.collegeID);
+  LiftUsage(this.timestamp, this.collegeID);
+
+  DateTime getTimestamp() {
+    return timestamp;
+  }
+
+  String getCollegeID() {
+    return collegeID;
+  }
+
+  int getYear() {
+    return timestamp.year;
+  }
 }

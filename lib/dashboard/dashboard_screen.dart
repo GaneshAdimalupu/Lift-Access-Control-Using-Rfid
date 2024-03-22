@@ -5,7 +5,7 @@ import 'components/header.dart';
 import 'components/lift_usage_chart.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class DashboardScreen extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children: [
-                       LiftUsageChart(),
+                        const LiftUsageChart(),
                       const SizedBox(height: defaultPadding),
                       // Empty container instead of RecentFiles()
                       Container(),
