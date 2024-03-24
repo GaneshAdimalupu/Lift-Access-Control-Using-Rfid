@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -52,13 +54,16 @@ class FirestoreService {
         // Extracting collegeID and timestamp from Firestore document
         String collegeID = doc['collegeID'].toString(); // Convert to String
         List<dynamic> liftUsageList = doc['liftUsage'];
+        String fullName = doc['fullName']
+            .toString(); // Hypothetical function to fetch fullName
 
         for (var usage in liftUsageList) {
           Timestamp timestamp = usage['timestamp'];
           // Converting timestamp to DateTime
           DateTime date = timestamp.toDate();
           // Adding data to liftUsageData list
-          liftUsageData.add(LiftUsage(date, collegeID, 1)); // Hardcoded usageCount to 1 for each log
+          liftUsageData.add(LiftUsage(date, collegeID, 1,
+              fullName)); // Hardcoded usageCount to 1 for each log
         }
       }
     } catch (e) {
@@ -73,9 +78,9 @@ class LiftUsage {
   final DateTime timestamp;
   final String collegeID;
   final int usageCount;
+  final String fullName;
 
-
-  LiftUsage(this.timestamp, this.collegeID, this.usageCount);
+  LiftUsage(this.timestamp, this.collegeID, this.usageCount, this.fullName);
 
   DateTime getTimestamp() {
     return timestamp;
