@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_auth/services/firestore_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+// import 'package:flutter_auth/services/firestore_service.dart';
+import 'package:flutter_auth/dashboard/components/sample.dart';
+// future: Future.delayed(Duration(seconds: 1), () => generateSampleData(50)), // Generate 30 days of sample data with a delay of 1 second
 
 class LiftUsageChart extends StatelessWidget {
   const LiftUsageChart({Key? key});
@@ -9,7 +11,9 @@ class LiftUsageChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<LiftUsage>>(
-      future: FirestoreService.getLiftUsageData(),
+      // future: FirestoreService.getLiftUsageData(),
+      future: Future.delayed(Duration(seconds: 1), () => generateSampleData(50)), // Generate 30 days of sample data with a delay of 1 second
+
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -21,54 +25,82 @@ class LiftUsageChart extends StatelessWidget {
         // Sort lift usage data by timestamp in ascending order
         snapshot.data!.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        // Find the minimum and maximum usage counts
-        num minUsageCount = snapshot.data!.map((usage) => usage.usageCount).reduce((a, b) => a < b ? a : b);
-        num maxUsageCount = snapshot.data!.map((usage) => usage.usageCount).reduce((a, b) => a > b ? a : b);
-
-        return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.6,
+        return SingleChildScrollView(
+          scrollDirection:
+              Axis.vertical, // Vertical scrolling for entire content
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Lift Usage Chart',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              const SizedBox(height: 16),
               SizedBox(
-                height: 300, // Height of the chart
+                width: MediaQuery.of(context)
+                    .size
+                    .width, // Set width to screen width
+                height: 300,
                 child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                  scrollDirection:
+                      Axis.horizontal, // Horizontal scrolling for the chart
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 2, // Set the width of the chart
+                    width: snapshot.data!.length * 50.0,
+                    height: 300,
                     child: SfCartesianChart(
-                      primaryXAxis: DateTimeAxis(
-                        dateFormat: DateFormat('dd/MM'),
-                        intervalType: DateTimeIntervalType.days,
-                        interval: 1,
+                      primaryXAxis: CategoryAxis(
+                        labelRotation: 45,
+                        labelPlacement: LabelPlacement.onTicks,
+                        majorGridLines: MajorGridLines(width: 0),
                       ),
                       primaryYAxis: NumericAxis(
-                        minimum: minUsageCount.toDouble(), // Set the minimum usage count
-                        maximum: maxUsageCount.toDouble(), // Set the maximum usage count
-                        edgeLabelPlacement: EdgeLabelPlacement.shift,
+                        minimum: 0,
+                        maximum: 24,
+                        interval: 1,
+                        majorGridLines: MajorGridLines(width: 0),
                       ),
-                      series: _buildSeries(snapshot.data!),
-                      tooltipBehavior: TooltipBehavior(enable: true), // Enable tooltips
+                      series: <ChartSeries<LiftUsage, String>>[
+                        LineSeries<LiftUsage, String>(
+                          dataSource: snapshot.data!,
+                          xValueMapper: (LiftUsage usage, _) =>
+                              DateFormat('dd/MM').format(usage.timestamp),
+                          yValueMapper: (LiftUsage usage, _) =>
+                              usage.timestamp.hour.toDouble(),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16), // Add some spacing between the chart and Y-axis
-              const Text('Usage Count'), // Y-axis label
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text('Usage Points:',
+                    style: Theme.of(context).textTheme.headline6),
+              ),
+              const SizedBox(height: 8),
+              ListView.builder(
+                shrinkWrap: true,
+                physics:
+                    NeverScrollableScrollPhysics(), // Disable scrolling for the list view
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final usage = snapshot.data![index];
+                  return ListTile(
+                    title: Text('College ID: ${usage.collegeID}'),
+                    subtitle: Text(
+                        'Timestamp: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(usage.timestamp)}'),
+                  );
+                },
+              ),
             ],
           ),
         );
       },
     );
-  }
-
-  List<LineSeries<LiftUsage, DateTime>> _buildSeries(List<LiftUsage> liftUsageData) {
-    return [
-      LineSeries<LiftUsage, DateTime>(
-        dataSource: liftUsageData,
-        xValueMapper: (LiftUsage usage, _) => usage.timestamp,
-        yValueMapper: (LiftUsage usage, _) => usage.usageCount,
-        dataLabelSettings: const DataLabelSettings(isVisible: false), // Remove usage count labels
-      ),
-    ];
   }
 }
