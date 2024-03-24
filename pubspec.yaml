@@ -37,6 +37,10 @@ dependencies:
   shared_preferences: ^2.0.8
   syncfusion_flutter_charts: 21.2.4
   intl: 0.17.0
+  pdf: ^3.6.1  # Add the dependency for generating PDF documents
+  path_provider: ^2.0.2  # Add the dependency for accessing the device's file system
+  open_file: ^3.0.3  # Add the dependency for opening files using platform-specific apps
+
 
 
 dev_dependencies:

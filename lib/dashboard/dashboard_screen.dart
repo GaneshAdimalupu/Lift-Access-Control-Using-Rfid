@@ -24,7 +24,7 @@ class DashboardScreen extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children: [
-                        const LiftUsageChart(),
+                         const LiftUsageChart(),
                       const SizedBox(height: defaultPadding),
                       // Empty container instead of RecentFiles()
                       Container(),

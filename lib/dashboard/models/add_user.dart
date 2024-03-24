@@ -155,9 +155,6 @@ class AddUserDialog extends StatelessWidget {
         if (data != null && data.containsKey('liftUsage')) {
           List<dynamic> currentUsage = data['liftUsage'];
 
-          // Ensure currentUsage is not null and initialize it if it's null
-          currentUsage ??= [];
-
           // Update the list with new lift usage
           currentUsage.add({
             //'collegeID': collegeID,

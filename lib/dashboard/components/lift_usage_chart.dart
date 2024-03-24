@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_auth/services/firestore_service.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class LiftUsageChart extends StatelessWidget {
   const LiftUsageChart({Key? key});
@@ -13,49 +14,61 @@ class LiftUsageChart extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        List<LiftUsage> liftUsageData = snapshot.data ?? [];
-
-        // Count the occurrences of lift usage for each college ID
-        Map<String, int> liftUsageCount = {};
-        for (var usage in liftUsageData) {
-          liftUsageCount.update(usage.collegeID, (value) => value + 1, ifAbsent: () => 1);
+        if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No lift usage data available.'));
         }
 
-        // Convert the map into a list of data points
-        List<ChartData> chartData = [];
-        liftUsageCount.forEach((collegeID, count) {
-          chartData.add(ChartData(collegeID, count));
-        });
+        // Sort lift usage data by timestamp in ascending order
+        snapshot.data!.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+        // Find the minimum and maximum usage counts
+        num minUsageCount = snapshot.data!.map((usage) => usage.usageCount).reduce((a, b) => a < b ? a : b);
+        num maxUsageCount = snapshot.data!.map((usage) => usage.usageCount).reduce((a, b) => a > b ? a : b);
 
         return SizedBox(
-          height: 300,
-          child: SfCartesianChart(
-            title: ChartTitle(text: "Lift Usage"),
-            primaryXAxis: CategoryAxis(),
-            primaryYAxis: NumericAxis(),
-            series: <ChartSeries>[
-              ColumnSeries<ChartData, String>(
-                dataSource: chartData,
-                xValueMapper: (ChartData data, _) => data.collegeID,
-                yValueMapper: (ChartData data, _) => data.count,
-                dataLabelSettings: const DataLabelSettings(isVisible: true),
-                enableTooltip: true,
-                markerSettings: const MarkerSettings(isVisible: true),
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 300, // Height of the chart
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 2, // Set the width of the chart
+                    child: SfCartesianChart(
+                      primaryXAxis: DateTimeAxis(
+                        dateFormat: DateFormat('dd/MM'),
+                        intervalType: DateTimeIntervalType.days,
+                        interval: 1,
+                      ),
+                      primaryYAxis: NumericAxis(
+                        minimum: minUsageCount.toDouble(), // Set the minimum usage count
+                        maximum: maxUsageCount.toDouble(), // Set the maximum usage count
+                        edgeLabelPlacement: EdgeLabelPlacement.shift,
+                      ),
+                      series: _buildSeries(snapshot.data!),
+                      tooltipBehavior: TooltipBehavior(enable: true), // Enable tooltips
+                    ),
+                  ),
+                ),
               ),
+              const SizedBox(height: 16), // Add some spacing between the chart and Y-axis
+              const Text('Usage Count'), // Y-axis label
             ],
           ),
         );
       },
     );
   }
-}
 
-class ChartData {
-  final String collegeID;
-  final int count;
-
-  ChartData(this.collegeID, this.count);
+  List<LineSeries<LiftUsage, DateTime>> _buildSeries(List<LiftUsage> liftUsageData) {
+    return [
+      LineSeries<LiftUsage, DateTime>(
+        dataSource: liftUsageData,
+        xValueMapper: (LiftUsage usage, _) => usage.timestamp,
+        yValueMapper: (LiftUsage usage, _) => usage.usageCount,
+        dataLabelSettings: const DataLabelSettings(isVisible: false), // Remove usage count labels
+      ),
+    ];
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 class FirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -57,7 +58,7 @@ class FirestoreService {
           // Converting timestamp to DateTime
           DateTime date = timestamp.toDate();
           // Adding data to liftUsageData list
-          liftUsageData.add(LiftUsage(date, collegeID));
+          liftUsageData.add(LiftUsage(date, collegeID, 1)); // Hardcoded usageCount to 1 for each log
         }
       }
     } catch (e) {
@@ -71,8 +72,10 @@ class FirestoreService {
 class LiftUsage {
   final DateTime timestamp;
   final String collegeID;
+  final int usageCount;
 
-  LiftUsage(this.timestamp, this.collegeID);
+
+  LiftUsage(this.timestamp, this.collegeID, this.usageCount);
 
   DateTime getTimestamp() {
     return timestamp;
