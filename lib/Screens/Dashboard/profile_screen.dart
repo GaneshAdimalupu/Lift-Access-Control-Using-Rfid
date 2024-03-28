@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_auth/dashboard/models/add_user.dart';
+import 'package:flutter_auth/components/dashboard/models/add_user.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _sortByFullName = false; // Variable to control sorting by fullName
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +23,17 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        //backgroundColor: Colors.blue, // Change app bar background color
+        actions: [
+          IconButton(
+            icon: Icon(_sortByFullName ? Icons.sort_by_alpha : Icons.sort),
+            onPressed: () {
+              setState(() {
+                _sortByFullName =
+                    !_sortByFullName; // Toggle sorting by fullName
+              });
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -26,7 +43,7 @@ class ProfileScreen extends StatelessWidget {
               child: Text(
                 'Error: ${snapshot.error}',
                 style: TextStyle(
-                  color: Colors.red, // Error text color
+                  color: Colors.red,
                 ),
               ),
             );
@@ -35,19 +52,23 @@ class ProfileScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(
-                color: Colors.blue, // Loading indicator color
+                color: Colors.blue,
               ),
             );
           }
 
-          final users = snapshot.data?.docs;
+          List<DocumentSnapshot> users = snapshot.data?.docs ?? [];
+          if (_sortByFullName) {
+            users.sort((a, b) =>
+                (a['fullName'] as String).compareTo(b['fullName'] as String));
+          }
 
-          if (users == null || users.isEmpty) {
+          if (users.isEmpty) {
             return Center(
               child: Text(
                 'No users found',
                 style: TextStyle(
-                  color: Colors.grey, // Text color for no users found
+                  color: Colors.grey,
                 ),
               ),
             );
@@ -58,8 +79,8 @@ class ProfileScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final userData = users[index].data() as Map<String, dynamic>;
               return Card(
-                elevation: 3, // Card elevation
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Card margin
+                elevation: 3,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: ListTile(
                   title: Text(
                     userData['fullName'] ?? 'Unknown',
@@ -70,7 +91,7 @@ class ProfileScreen extends StatelessWidget {
                   subtitle: Text(
                     'Email: ${userData['email'] ?? 'Unknown'}, College ID: ${userData['collegeID'] ?? 'Unknown'}',
                     style: TextStyle(
-                      color: Colors.grey, // Subtitle text color
+                      color: Colors.grey,
                     ),
                   ),
                 ),
@@ -80,17 +101,24 @@ class ProfileScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
+        onPressed: () async {
+          final result = await showDialog(
             context: context,
             builder: (context) => AddUserDialog(),
           );
+          if (result == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('User added successfully'),
+              ),
+            );
+          }
         },
         child: Icon(
           Icons.add,
-          color: Colors.white, // Icon color
+          color: Colors.white,
         ),
-        backgroundColor: Colors.blue, // Floating action button color
+        backgroundColor: Colors.blue,
       ),
     );
   }

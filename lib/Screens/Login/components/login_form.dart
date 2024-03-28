@@ -76,7 +76,9 @@ class _LoginFormState extends State<LoginForm> {
                       obscurePassword = !obscurePassword;
                     });
                   },
-                  icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(obscurePassword
+                      ? Icons.visibility
+                      : Icons.visibility_off),
                 ),
                 prefixIcon: const Padding(
                   padding: EdgeInsets.all(defaultPadding),
@@ -87,35 +89,40 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: defaultPadding),
           ElevatedButton(
-            onPressed: isLoading ? null : () async {
-              if (formKey.currentState?.validate() ?? false) {
-                setState(() {
-                  isLoading = true;
-                });
+            onPressed: isLoading
+                ? null
+                : () async {
+                    if (formKey.currentState?.validate() ?? false) {
+                      setState(() {
+                        isLoading = true;
+                      });
 
-                formKey.currentState!.save();
+                      formKey.currentState!.save();
 
-                try {
-                  final user = await _authService.signInMethod(email, password);
-                  if (user != null) {
-                    Fluttertoast.showToast(msg: "Login is Successful");
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) =>   const MainScreen()),
-                    );
-                  } else {
-                    Fluttertoast.showToast(msg: "Invalid credentials");
-                  }
-                } catch (e) {
-                  print("Login Error: $e");
-                  Fluttertoast.showToast(msg: "An error occurred during login");
-                } finally {
-                  setState(() {
-                    isLoading = false;
-                  });
-                }
-              }
-            },
+                      try {
+                        final user =
+                            await _authService.signInWithEmailAndPassword(email, password);
+                        if (user != null) {
+                          Fluttertoast.showToast(msg: "Login is Successful");
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const MainScreen()),
+                          );
+                        } else {
+                          Fluttertoast.showToast(msg: "Invalid credentials");
+                        }
+                      } catch (e) {
+                        print("Login Error: $e");
+                        Fluttertoast.showToast(
+                            msg: "An error occurred during login");
+                      } finally {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    }
+                  },
             child: isLoading
                 ? const CircularProgressIndicator()
                 : Text("Login".toUpperCase()),
@@ -138,10 +145,64 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
+  // bool _isValidEmail(String email) {
+  //   // You can implement your email format validation logic here
+  //   // For a simple check, we're using a regular expression
+  //   String emailRegex = r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$';
+  //   return RegExp(emailRegex).hasMatch(email);
+  // }
+
   bool _isValidEmail(String email) {
-    // You can implement your email format validation logic here
-    // For a simple check, we're using a regular expression
+    // Regular expression for basic email format
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$';
-    return RegExp(emailRegex).hasMatch(email);
+
+    // Additional validation logic
+    bool isWhitelisted = _isWhitelistedDomain(email);
+    bool isBlacklisted = _isBlacklistedDomain(email);
+    bool isDisposable = _isDisposableEmail(email); // Optional check
+
+    if (isBlacklisted) {
+      return false; // Always invalid if blacklisted
+    }
+
+    if (isWhitelisted) {
+      return true; // Always valid if whitelisted
+    }
+
+    // Basic format check + optional checks (MX record optional)
+    return RegExp(emailRegex).hasMatch(email) &&
+        // ... optional MX record check
+        !isDisposable;
+  }
+
+// Method to check if the email domain is whitelisted
+  bool _isWhitelistedDomain(String email) {
+    // Implement logic to check against whitelisted domains
+    // Example:
+    List<String> whitelistedDomains = ['example.com', 'whitelisteddomain.com'];
+    String domain = email.split('@').last;
+    return whitelistedDomains.contains(domain);
+  }
+
+// Method to check if the email domain is blacklisted
+  bool _isBlacklistedDomain(String email) {
+    // Implement logic to check against blacklisted domains
+    // Example:
+    List<String> blacklistedDomains = ['spamdomain.com', 'blacklisted.com'];
+    String domain = email.split('@').last;
+    return blacklistedDomains.contains(domain);
+  }
+
+// Method to check if the email is from a disposable email address provider
+  bool _isDisposableEmail(String email) {
+    // Implement logic to check against disposable email address providers
+    // Example:
+    List<String> disposableProviders = [
+      'mailinator.com',
+      'guerrillamail.com',
+      'disposablemail.com'
+    ];
+    String domain = email.split('@').last;
+    return disposableProviders.contains(domain);
   }
 }

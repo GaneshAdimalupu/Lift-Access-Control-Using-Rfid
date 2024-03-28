@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/dashboard/models/lift_usage_log.dart';
+import 'package:flutter_auth/Screens/Dashboard/lift_usage_log.dart';
+import 'package:flutter_auth/Screens/Main%20Screen/settings.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_auth/dashboard/models/profile_screen.dart';
+import 'package:flutter_auth/Screens/Dashboard/profile_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -36,7 +37,7 @@ class SideMenu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>   const LiftUsageLogScreen(),
+                  builder: (context) => const LiftUsageLogScreen(),
                 ),
               );
             },
@@ -46,6 +47,12 @@ class SideMenu extends StatelessWidget {
             title: "Settings",
             svgSrc: "assets/icons/menu_setting.svg",
             press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
               // Navigate to ProfileScreen when "Profile" item is pressed
             },
           ),

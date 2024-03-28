@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:path_provider/path_provider.dart'; // Import path_provider package
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/services/firestore_service.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class LiftUsageLogScreen extends StatelessWidget {
@@ -46,11 +44,11 @@ class LiftUsageLogScreen extends StatelessWidget {
                 child: ListTile(
                   title: Text(
                     'College ID: ${liftUsage.collegeID}',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
                     'Timestamp: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(liftUsage.timestamp)}',
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ),
               );
@@ -66,44 +64,58 @@ class LiftUsageLogScreen extends StatelessWidget {
     final List<LiftUsage> liftUsageData = await FirestoreService.getLiftUsageData();
 
     if (liftUsageData.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('No lift usage data available to download.'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No lift usage data available to download.'),
+        ),
+      );
       return;
     }
 
-    pdf.addPage(pw.Page(
-      build: (context) {
-        return pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text('Lift Usage Log', style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
-            pw.SizedBox(height: 20),
-            for (final liftUsage in liftUsageData)
-              pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Text('College ID: ${liftUsage.collegeID}', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('Timestamp: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(liftUsage.timestamp)}'),
-                  pw.Divider(),
-                ],
-              ),
-          ],
-        );
-      },
-    ));
+    pdf.addPage(
+      pw.Page(
+        build: (context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Lift Usage Log', style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 20),
+              for (final liftUsage in liftUsageData)
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text('College ID: ${liftUsage.collegeID}', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    pw.Text('Timestamp: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(liftUsage.timestamp)}'),
+                    pw.Divider(),
+                  ],
+                ),
+            ],
+          );
+        },
+      ),
+    );
 
     final bytes = await pdf.save();
     final Uint8List data = Uint8List.fromList(bytes);
 
     final directory = await getExternalStorageDirectory();
-    final pdfPath = '${directory!.path}/lift_usage_log.pdf';
+    if (directory == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to access storage.'),
+        ),
+      );
+      return;
+    }
 
+    final pdfPath = '${directory.path}/lift_usage_log.pdf';
     final pdfFile = File(pdfPath);
     await pdfFile.writeAsBytes(data);
 
-    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-      content: Text('PDF downloaded successfully: $pdfPath'),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('PDF downloaded successfully: $pdfPath'),
+      ),
+    );
   }
 }

@@ -1,7 +1,7 @@
 
 import 'package:flutter_auth/Screens/Main%20Screen/side_menu.dart';
-import 'package:flutter_auth/dashboard/controller/menu_app_controller.dart';
-import 'package:flutter_auth/dashboard/dashboard_screen.dart';
+import 'package:flutter_auth/components/dashboard/controller/menu_app_controller.dart';
+import 'package:flutter_auth/Screens/Dashboard/dashboard_screen.dart';
 import 'package:flutter_auth/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

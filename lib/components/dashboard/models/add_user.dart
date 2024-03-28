@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,7 +10,7 @@ class AddUserDialog extends StatelessWidget {
   final TextEditingController _collegeIdController = TextEditingController();
   final TextEditingController _documentIdController = TextEditingController();
 
-  AddUserDialog({super.key});
+  AddUserDialog({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +37,9 @@ class AddUserDialog extends StatelessWidget {
     );
   }
 
-  void _showAddUserDialog(BuildContext context) {
+  void _showAddUserDialog(BuildContext context) async {
     Navigator.of(context).pop(); // Dismiss the current dialog
-    showDialog(
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add User'),
@@ -57,6 +59,10 @@ class AddUserDialog extends StatelessWidget {
                 controller: _collegeIdController,
                 decoration: const InputDecoration(labelText: 'College ID'),
               ),
+              TextField(
+                controller: _documentIdController,
+                decoration: const InputDecoration(labelText: 'Document ID'),
+              ),
             ],
           ),
         ),
@@ -68,8 +74,9 @@ class AddUserDialog extends StatelessWidget {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              _addUserToFirestore(context);
+            onPressed: () async {
+              await _addUserToFirestore(context);
+              Navigator.of(context).pop(); // Close dialog after adding user
             },
             child: const Text('Add'),
           ),
@@ -78,25 +85,25 @@ class AddUserDialog extends StatelessWidget {
     );
   }
 
-  void _addUserToFirestore(BuildContext context) async {
+  Future<void> _addUserToFirestore(BuildContext context) async {
     final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
     final collegeID = _collegeIdController.text.trim();
+    final documentID = _documentIdController.text.trim();
 
-    if (fullName.isEmpty || email.isEmpty || collegeID.isEmpty) {
+    if (fullName.isEmpty || email.isEmpty || collegeID.isEmpty || documentID.isEmpty) {
       Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
 
     try {
-      await FirebaseFirestore.instance.collection('users').add({
+      await FirebaseFirestore.instance.collection('users').doc(documentID).set({
         'fullName': fullName,
         'email': email,
         'collegeID': collegeID,
         'liftUsage': [], // Initialize lift usage as an empty list
       });
       Fluttertoast.showToast(msg: 'User added successfully');
-      Navigator.of(context).pop();
     } catch (e) {
       Fluttertoast.showToast(msg: 'Error adding user: $e');
     }
@@ -131,6 +138,7 @@ class AddUserDialog extends StatelessWidget {
           TextButton(
             onPressed: () {
               _logLiftUsage(context);
+              Navigator.of(context).pop(); // Close dialog after logging lift usage
             },
             child: const Text('Use Lift'),
           ),
@@ -192,3 +200,4 @@ class AddUserDialog extends StatelessWidget {
     }
   }
 }
+

@@ -37,17 +37,28 @@ dependencies:
   shared_preferences: ^2.0.8
   syncfusion_flutter_charts: 21.2.4
   intl: 0.17.0
-  pdf: ^3.6.1  # Add the dependency for generating PDF documents
-  path_provider: ^2.0.2  # Add the dependency for accessing the device's file system
-  open_file: ^3.0.3  # Add the dependency for opening files using platform-specific apps
+  pdf: ^3.6.1 # Add the dependency for generating PDF documents
+  path_provider: ^2.0.2 # Add the dependency for accessing the device's file system
+  open_file: ^3.0.3 # Add the dependency for opening files using platform-specific apps
+  line_awesome_flutter: ^1.0.1
+  flutter_screenutil:
+    5.9.0
 
+    # switch animation between light and dark theme
+  animated_theme_switcher: ^2.0.10
 
+  # pick image
+  image_picker: ^0.7.4
+
+dependency_overrides:
+  intl: 0.17.0 # Specify the version of intl here
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^3.0.1
+  pedantic: ^1.11.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -63,6 +74,19 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/settings.png
+  fonts:
+    - family: CustomIcons
+      fonts:
+        - asset: assets/fonts/CustomIcons.ttf
+
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins/Poppins-Medium.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins/Poppins-Bold.ttf
+          weight: 700
   #  - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
