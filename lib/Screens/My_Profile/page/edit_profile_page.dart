@@ -2,18 +2,20 @@ import 'dart:io';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/My_Profile/utils/user_preferences.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/appbar_widget.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/button_widget.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/profile_widget.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/textfield_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/utils/user_preferences.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/appbar_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/button_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/profile_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/textfield_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_auth/Screens/My_Profile/model/user.dart';
+import 'package:Elivatme/Screens/My_Profile/model/user.dart';
 
 import 'package:path/path.dart';
 
 class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
+
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
@@ -34,8 +36,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           builder: (context) => Scaffold(
             appBar: buildAppBar(context),
             body: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              physics: const BouncingScrollPhysics(),
               children: [
                 ProfileWidget(
                   imagePath: user.imagePath,

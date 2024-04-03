@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Signup/components/socal_sign_up.dart';
-import 'package:flutter_auth/constants.dart';
-import 'package:flutter_auth/responsive.dart';
+import 'package:Elivatme/Screens/Signup/components/socal_sign_up.dart';
+import 'package:Elivatme/constants.dart';
+import 'package:Elivatme/responsive.dart';
 import '../../components/background.dart';
 import 'components/sign_up_top_image.dart';
 import 'components/signup_form.dart';

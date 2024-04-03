@@ -1,14 +1,16 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/My_Profile/model/user.dart';
-import 'package:flutter_auth/Screens/My_Profile/page/edit_profile_page.dart';
-import 'package:flutter_auth/Screens/My_Profile/utils/user_preferences.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/appbar_widget.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/button_widget.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/numbers_widget.dart';
-import 'package:flutter_auth/Screens/My_Profile/widget/profile_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/model/user.dart';
+import 'package:Elivatme/Screens/My_Profile/page/edit_profile_page.dart';
+import 'package:Elivatme/Screens/My_Profile/utils/user_preferences.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/appbar_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/button_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/numbers_widget.dart';
+import 'package:Elivatme/Screens/My_Profile/widget/profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -23,13 +25,13 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context) => Scaffold(
           appBar: buildAppBar(context),
           body: ListView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             children: [
               ProfileWidget(
                 imagePath: user.imagePath,
                 onClicked: () async {
                   await Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => EditProfilePage()),
+                    MaterialPageRoute(builder: (context) => const EditProfilePage()),
                   );
                   setState(() {});
                 },
@@ -39,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 24),
               Center(child: buildUpgradeButton()),
               const SizedBox(height: 24),
-              NumbersWidget(),
+              const NumbersWidget(),
               const SizedBox(height: 48),
               buildAbout(user),
             ],
@@ -53,12 +55,12 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             user.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
           Text(
             user.email,
-            style: TextStyle(color: Colors.grey),
+            style: const TextStyle(color: Colors.grey),
           )
         ],
       );
@@ -69,18 +71,18 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
   Widget buildAbout(User_new user) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 48),
+        padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'About',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
               user.about,
-              style: TextStyle(fontSize: 16, height: 1.4),
+              style: const TextStyle(fontSize: 16, height: 1.4),
             ),
           ],
         ),

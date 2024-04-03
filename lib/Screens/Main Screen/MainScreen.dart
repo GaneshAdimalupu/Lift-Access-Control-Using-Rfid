@@ -1,8 +1,8 @@
 
-import 'package:flutter_auth/Screens/Main%20Screen/side_menu.dart';
-import 'package:flutter_auth/components/dashboard/controller/menu_app_controller.dart';
-import 'package:flutter_auth/Screens/Dashboard/dashboard_screen.dart';
-import 'package:flutter_auth/responsive.dart';
+import 'package:Elivatme/Screens/Main%20Screen/side_menu.dart';
+import 'package:Elivatme/components/dashboard/controller/menu_app_controller.dart';
+import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
+import 'package:Elivatme/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

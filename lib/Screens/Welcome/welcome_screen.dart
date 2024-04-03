@@ -1,5 +1,5 @@
+import 'package:Elivatme/Screens/Welcome/components/login_signup_btn.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Welcome/components/login_signup_btn.dart';
 
 import '../../components/background.dart';
 import '../../responsive.dart';

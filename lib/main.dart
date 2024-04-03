@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_auth/Screens/Dashboard/lift_usage_chart.dart';
-import 'package:flutter_auth/Screens/Dashboard/lift_usage_log.dart';
-import 'package:flutter_auth/Screens/Main%20Screen/MainScreen.dart';
-import 'package:flutter_auth/Screens/Main%20Screen/settings.dart';
+import 'package:Elivatme/Screens/Dashboard/home.dart';
+import 'package:Elivatme/Screens/Dashboard/lift_usage_log.dart';
+import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
+import 'package:Elivatme/Screens/Main%20Screen/settings.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_auth/Screens/My_Profile/page/profile_page.dart';
-import 'package:flutter_auth/Screens/My_Profile/utils/user_preferences.dart';
-import 'package:flutter_auth/components/dashboard/controller/menu_app_controller.dart';
-import 'package:flutter_auth/Screens/Dashboard/dashboard_screen.dart';
+import 'package:Elivatme/Screens/My_Profile/page/profile_page.dart';
+import 'package:Elivatme/Screens/My_Profile/utils/user_preferences.dart';
+import 'package:Elivatme/components/dashboard/controller/menu_app_controller.dart';
+import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart'; // Import animated_theme_switcher package
 import 'constants.dart'; // Import your constants file
@@ -35,13 +35,13 @@ void main() async {
               ThemeNotifier(), // Provide the ThemeNotifier here
         ),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +76,10 @@ class MyApp extends StatelessWidget {
 
                     '/dashboard': (context) => const DashboardScreen(),
                     '/settings': (context) => const SettingsScreen(),
-                    '/profile': (context) => ProfilePage(),
+                    '/profile': (context) => const ProfilePage(),
                     '/usage': (context) => const LiftUsageLogScreen(),
-                    '/graph': (context) => const LiftUsageChart(),
+                    '/graph': (context) => const SmoothScreen(),
+
                     //'/editprofile': (context) =>  EditProfilePage(),
                   },
                 );

@@ -10,7 +10,7 @@ class AddUserDialog extends StatelessWidget {
   final TextEditingController _collegeIdController = TextEditingController();
   final TextEditingController _documentIdController = TextEditingController();
 
-  AddUserDialog({Key? key});
+  AddUserDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

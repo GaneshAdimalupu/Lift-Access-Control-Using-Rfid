@@ -1,9 +1,11 @@
+import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Login/login_screen.dart';
-import 'package:flutter_auth/services/authentication_service.dart';
+import 'package:Elivatme/Screens/Login/login_screen.dart';
+import 'package:Elivatme/services/authentication_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -129,8 +131,15 @@ class _SignUpFormState extends State<SignUpForm> {
                   collegeID,
                 );
                 if (user != null) {
+                  await saveUserDataToFirestore(user.uid);
                   Fluttertoast.showToast(msg: "User is Successfully Created");
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const MainScreen()),
+                  );
                   // TODO: Navigate or update UI accordingly
+                } else {
+                  Fluttertoast.showToast(msg: "Invalid credentials");
                 }
               }
             },
@@ -159,5 +168,17 @@ class _SignUpFormState extends State<SignUpForm> {
     // For a simple check, we're using a regular expression
     String emailRegex = r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$';
     return RegExp(emailRegex).hasMatch(email);
+  }
+
+  Future<void> saveUserDataToFirestore(String userId) async {
+    try {
+      await FirebaseFirestore.instance.collection('app_users').doc(userId).set({
+        'email': email,
+        'fullName': fullName,
+        'collegeID': collegeID,
+      });
+    } catch (error) {
+      print('Error saving user data to Firestore: $error');
+    }
   }
 }

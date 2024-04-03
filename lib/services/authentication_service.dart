@@ -105,8 +105,6 @@
 //   }
 // }
 
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -116,7 +114,8 @@ class AuthenticationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
       final UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -138,7 +137,8 @@ class AuthenticationService {
     String collegeID,
   ) async {
     try {
-      final UserCredential authResult = await _auth.createUserWithEmailAndPassword(
+      final UserCredential authResult =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -162,7 +162,8 @@ class AuthenticationService {
 
   Future<User?> signInWithGoogle(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
 
       if (googleSignInAccount == null) {
         return null;
@@ -176,7 +177,8 @@ class AuthenticationService {
         idToken: googleSignInAuthentication.idToken,
       );
 
-      final UserCredential authResult = await _auth.signInWithCredential(credential);
+      final UserCredential authResult =
+          await _auth.signInWithCredential(credential);
 
       return authResult.user;
     } catch (error) {

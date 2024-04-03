@@ -1,8 +1,8 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/My_Profile/utils/user_preferences.dart';
-import 'package:flutter_auth/constants.dart';
+import 'package:Elivatme/Screens/My_Profile/utils/user_preferences.dart';
+import 'package:Elivatme/constants.dart';
 
 AppBar buildAppBar(BuildContext context) {
   final user = UserPreferences.getUser();
@@ -10,7 +10,7 @@ AppBar buildAppBar(BuildContext context) {
   final icon = isDarkMode ? CupertinoIcons.sun_max : CupertinoIcons.moon_stars;
 
   return AppBar(
-    leading: BackButton(),
+    leading: const BackButton(),
     backgroundColor: Colors.transparent,
     elevation: 0,
     actions: [

@@ -1,4 +1,4 @@
-name: flutter_auth
+name: Elivatme
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -27,34 +27,49 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_auth: ^4.16.0
   google_sign_in: ^6.2.1
-  logger: 2.0.2+1
   fluttertoast: 8.2.4
-  fl_chart: ^0.66.2
   provider: ^6.0.5
-  google_fonts: ^6.2.0
-  charts_flutter: ^0.12.0
   cloud_firestore: 4.15.9
+  firebase_storage: 11.6.11
+
   shared_preferences: ^2.0.8
+
+
   syncfusion_flutter_charts: 21.2.4
   intl: 0.17.0
+
+  loop_page_view: ^1.0.11
+
+
   pdf: ^3.6.1 # Add the dependency for generating PDF documents
   path_provider: ^2.0.2 # Add the dependency for accessing the device's file system
   open_file: ^3.0.3 # Add the dependency for opening files using platform-specific apps
   line_awesome_flutter: ^1.0.1
-  flutter_screenutil:
-    5.9.0
+
+  page_view_dot_indicator: ^2.3.0
 
     # switch animation between light and dark theme
   animated_theme_switcher: ^2.0.10
 
-  # pick image
-  image_picker: ^0.7.4
+  animations: ^2.0.0
 
+  # pick image
+  image_picker: ^0.8.4+4 # Add this line if it's missing
+
+  http: ^1.2.1
+
+  mqtt_client: ^9.6.7  # MQTT client library for communicating with ESP32
+
+
+  path: any
 dependency_overrides:
   intl: 0.17.0 # Specify the version of intl here
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+    
+  integration_test:
     sdk: flutter
 
   flutter_lints: ^3.0.1
@@ -74,19 +89,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/settings.png
-  fonts:
-    - family: CustomIcons
-      fonts:
-        - asset: assets/fonts/CustomIcons.ttf
 
-    - family: Poppins
-      fonts:
-        - asset: assets/fonts/Poppins/Poppins-Regular.ttf
-        - asset: assets/fonts/Poppins/Poppins-Medium.ttf
-          weight: 600
-        - asset: assets/fonts/Poppins/Poppins-Bold.ttf
-          weight: 700
   #  - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

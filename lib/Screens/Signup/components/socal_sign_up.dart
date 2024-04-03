@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Main%20Screen/MainScreen.dart';
-import 'package:flutter_auth/services/authentication_service.dart'; // Import your authentication service
+import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
+import 'package:Elivatme/services/authentication_service.dart'; // Import your authentication service
 
 import '../../../screens/Signup/components/or_divider.dart';
 import '../../../screens/Signup/components/social_icon.dart';
@@ -12,14 +12,14 @@ class SocalSignUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthenticationService _authService = AuthenticationService();
+    final AuthenticationService authService = AuthenticationService();
 
-    void _signInWithGoogle(BuildContext context) async {
-      final user = await _authService.signInWithGoogle(context);
+    void signInWithGoogle(BuildContext context) async {
+      final user = await authService.signInWithGoogle(context);
       if (user != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainScreen()), // Navigate to main screen
+          MaterialPageRoute(builder: (context) => const MainScreen()), // Navigate to main screen
         );
       }
     }
@@ -46,7 +46,7 @@ class SocalSignUp extends StatelessWidget {
               iconSrc: "assets/icons/google-plus.svg",
               press: () {
                 // Handle Google sign-in
-                _signInWithGoogle(context);
+                signInWithGoogle(context);
               },
             ),
           ],

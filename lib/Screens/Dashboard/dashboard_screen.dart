@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Dashboard/lift_usage_log.dart';
-import 'package:flutter_auth/Screens/Dashboard/profile_screen.dart';
-import 'package:flutter_auth/responsive.dart';
+import 'package:Elivatme/Screens/Dashboard/lift_usage_log.dart';
+import 'package:Elivatme/Screens/Dashboard/users.dart';
+import 'package:Elivatme/responsive.dart';
 import '../../../constants.dart';
 import '../../components/dashboard/components/header.dart';
-import 'lift_usage_chart.dart';
+import 'home.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -34,8 +34,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _currentIndex = index;
       _pageController.animateToPage(
         index,
-        duration: Duration(milliseconds: 50),
-        curve: Curves.easeInOut,
+        duration:
+            const Duration(milliseconds: 300), // Adjust transition duration as needed
+        curve: Curves.easeInOut, // Apply a custom curve for smoother animation
       );
     });
   }
@@ -45,7 +46,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SafeArea(
       child: Column(
         children: [
-          if (_currentIndex != 1) // Render the header only if not in the "Home" tab
+          if (_currentIndex ==
+              1) // Render the header only if not in the "Home" tab
             const Header(),
           const SizedBox(height: defaultPadding),
           Expanded(
@@ -56,10 +58,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _currentIndex = index;
                 });
               },
-              children: [
-                const ProfileScreen(),
-                const LiftUsageChart(),
-                const LiftUsageLogScreen()
+              children: const [
+                ProfileScreen(),
+                 SmoothScreen(),
+                LiftUsageLogScreen()
               ],
             ),
           ),
@@ -81,6 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
               currentIndex: _currentIndex,
               onTap: _onItemTapped,
+              selectedItemColor: Colors.blue, // Customize selected item color
             ),
         ],
       ),

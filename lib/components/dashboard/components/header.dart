@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/My_Profile/page/profile_page.dart';
-import 'package:flutter_auth/components/dashboard/controller/menu_app_controller.dart';
-import 'package:flutter_auth/responsive.dart';
+import 'package:Elivatme/Screens/My_Profile/page/profile_page.dart';
+import 'package:Elivatme/components/dashboard/controller/menu_app_controller.dart';
+import 'package:Elivatme/responsive.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Header extends StatelessWidget {
   const Header({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +28,12 @@ class Header extends StatelessWidget {
           ),
         if (!Responsive.isMobile(context))
           Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
-        Expanded(
+        const Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               SearchField(),
-              const SizedBox(
+              SizedBox(
                   width:
                       10), // Add some spacing between SearchField and ProfileCard
               ProfileCard(),
@@ -46,25 +47,32 @@ class Header extends StatelessWidget {
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfilePage()),
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
         );
       },
       child: Row(
         children: [
           Hero(
             tag: 'profilePic', // Unique tag for the Hero animation
-            child: Icon(
-              LineAwesomeIcons
-                  .alternate_sign_in, // Use LineAwesomeIcons.search as the icon
+            child: CircleAvatar(
+              radius: 15,
+              backgroundImage: user != null
+                  ? NetworkImage(
+                      // Use the user's profile picture URL from Firestore
+                      'YOUR_FIREBASE_STORAGE_URL/${user.uid}.jpg',
+                    )
+                  : null,
+              child: user == null ? const Icon(LineAwesomeIcons.user) : null,
             ),
           ),
           if (!Responsive.isMobile(context))
@@ -80,7 +88,7 @@ class ProfileCard extends StatelessWidget {
 }
 
 class SearchField extends StatelessWidget {
-  const SearchField({Key? key}) : super(key: key);
+  const SearchField({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +96,9 @@ class SearchField extends StatelessWidget {
       onTap: () {
         // Implement your search logic here
         // For now, just print a message
-        print('Perform search');
+        print('Perform search'); 
       },
-      child: Icon(
+      child: const Icon(
         LineAwesomeIcons.search, // Use LineAwesomeIcons.search as the icon
       ),
     );

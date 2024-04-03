@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_auth/Screens/My_Profile/model/user.dart';
+import 'package:Elivatme/Screens/My_Profile/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences {

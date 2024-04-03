@@ -1,6 +1,6 @@
 // login_screen.dart
+import 'package:Elivatme/responsive.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/responsive.dart';
 
 import '../../components/background.dart';
 import 'components/login_form.dart';

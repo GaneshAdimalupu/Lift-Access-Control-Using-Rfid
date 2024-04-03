@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/constants.dart';
+import 'package:Elivatme/constants.dart';
 
 class OrDivider extends StatelessWidget {
   const OrDivider({super.key});
