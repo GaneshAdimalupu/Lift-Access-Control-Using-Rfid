@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:Elivatme/Screens/Dashboard/lift_usage_log.dart';
-import 'package:Elivatme/Screens/Dashboard/users.dart';
+import 'package:Elivatme/Screens/Dashboard/Tabs/lift_usage_log.dart';
+import 'package:Elivatme/Screens/Dashboard/Tabs/users.dart';
 import 'package:Elivatme/responsive.dart';
 import '../../../constants.dart';
 import '../../components/dashboard/components/header.dart';
-import 'home.dart';
+import 'Tabs/home.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -69,6 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
+                  
                   icon: Icon(Icons.person_outlined),
                   label: 'Users',
                 ),

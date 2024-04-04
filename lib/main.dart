@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:Elivatme/Screens/Dashboard/home.dart';
-import 'package:Elivatme/Screens/Dashboard/lift_usage_log.dart';
+import 'package:Elivatme/Screens/Dashboard/Tabs/home.dart';
+import 'package:Elivatme/Screens/Dashboard/Tabs/lift_usage_log.dart';
 import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
 import 'package:Elivatme/Screens/Main%20Screen/settings.dart';
 import 'package:firebase_core/firebase_core.dart';

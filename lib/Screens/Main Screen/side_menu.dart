@@ -1,3 +1,5 @@
+import 'package:Elivatme/Screens/Dashboard/models/pages/line_page.dart';
+import 'package:Elivatme/Screens/Lift%20Access/elivator_use.dart';
 import 'package:Elivatme/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,11 +31,34 @@ class SideMenu extends StatelessWidget {
               },
             ),
             DrawerListTile(
+              title: "Use Lift",
+              svgSrc: "assets/icons/menu_setting.svg",
+              press: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ElevatorPage(numberOfFloors: 5,),
+                  ),
+                );
+              },
+            ),
+            DrawerListTile(
+              title: "Line Chart",
+              svgSrc: "assets/icons/menu_setting.svg",
+              press: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LinePage(),
+                  ),
+                );
+              },
+            ),
+            DrawerListTile(
               title: "Logout",
               svgSrc: "assets/icons/menu_setting.svg",
               press: () {
                 _handleLogout(context); // Call the logout handler method
-
               },
             ),
           ],
@@ -78,8 +103,9 @@ class DrawerListTile extends StatelessWidget {
     );
   }
 }
- void _handleLogout(BuildContext context) {
-    // Add your logout logic here
-    // For example, you can navigate to the login screen:
-    Navigator.pushReplacementNamed(context, '/login');
-  }
+
+void _handleLogout(BuildContext context) {
+  // Add your logout logic here
+  // For example, you can navigate to the login screen:
+  Navigator.pushReplacementNamed(context, '/login');
+}
