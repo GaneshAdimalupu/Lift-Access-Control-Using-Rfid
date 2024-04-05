@@ -1,4 +1,3 @@
-import 'package:Elivatme/Screens/Dashboard/models/pages/line_page.dart';
 import 'package:Elivatme/Screens/Lift%20Access/elivator_use.dart';
 import 'package:Elivatme/constants.dart';
 import 'package:flutter/material.dart';
@@ -38,18 +37,6 @@ class SideMenu extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ElevatorPage(numberOfFloors: 5,),
-                  ),
-                );
-              },
-            ),
-            DrawerListTile(
-              title: "Line Chart",
-              svgSrc: "assets/icons/menu_setting.svg",
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LinePage(),
                   ),
                 );
               },

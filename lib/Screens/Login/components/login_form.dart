@@ -1,5 +1,5 @@
 // login_form.dart
-import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
+import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
 import 'package:Elivatme/Screens/Signup/signup_screen.dart';
 import 'package:Elivatme/services/authentication_service.dart';
 import 'package:flutter/material.dart';
@@ -108,7 +108,7 @@ class _LoginFormState extends State<LoginForm> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const MainScreen()),
+                                builder: (_) => const DashboardScreen()),
                           );
                         } else {
                           Fluttertoast.showToast(msg: "Invalid credentials");

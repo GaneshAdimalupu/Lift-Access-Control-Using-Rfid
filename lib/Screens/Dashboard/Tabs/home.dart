@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:Elivatme/components/dashboard/components/header.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class SmoothScreen extends StatelessWidget {
-  const SmoothScreen({super.key});
+  const SmoothScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +36,18 @@ class SmoothScreen extends StatelessWidget {
                       systemBrightness == Brightness.dark
                   ? MyThemes.darkTheme
                   : MyThemes.lightTheme,
-              home: const Scaffold(
+              home: Scaffold(
                 backgroundColor: Color(0xFF1B0E41), // Set background color here
                 body: SafeArea(
-                  child: SingleChildScrollView(
-                    child: HomePage(),
+                  child: Column(
+                    children: [
+                      Header(),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: HomePage(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -51,6 +59,7 @@ class SmoothScreen extends StatelessWidget {
     );
   }
 }
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -188,7 +197,6 @@ class StackedRadialBarChart extends StatefulWidget {
   _StackedRadialBarChartState createState() => _StackedRadialBarChartState();
 }
 
-
 class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
   late Future<List<LiftUsage>> _liftUsageFuture;
   late Future<int> _userCountFuture;
@@ -316,6 +324,8 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
         return _buildColumnChart(liftUsageByDate);
       case ChartType.line:
         return _buildLineChart(liftUsageByDate);
+      // case ChartType.lineByHour:
+      //   return _buildLineChartByHour(liftUsageByDate);
       // Add more chart types as needed
     }
   }
@@ -403,12 +413,13 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
     return paddedData;
   }
 }
+
 enum ChartType {
   column,
   line,
+  // lineByHour,
   // Add more chart types as needed
 }
-
 
 class StackedRadialBarChartWidget extends StatelessWidget {
   final List<LiftUsage> liftUsageData;

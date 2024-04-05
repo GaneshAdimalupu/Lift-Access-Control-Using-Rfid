@@ -1,4 +1,4 @@
-import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
+import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:Elivatme/Screens/Login/login_screen.dart';
 import 'package:Elivatme/services/authentication_service.dart';
@@ -135,7 +135,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   Fluttertoast.showToast(msg: "User is Successfully Created");
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const MainScreen()),
+                    MaterialPageRoute(builder: (_) => const DashboardScreen()),
                   );
                   // TODO: Navigate or update UI accordingly
                 } else {

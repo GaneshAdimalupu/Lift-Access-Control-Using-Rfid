@@ -1,5 +1,5 @@
+import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
 import 'package:Elivatme/services/authentication_service.dart'; // Import your authentication service
 
 import '../../../screens/Signup/components/or_divider.dart';
@@ -19,7 +19,7 @@ class SocalSignUp extends StatelessWidget {
       if (user != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainScreen()), // Navigate to main screen
+          MaterialPageRoute(builder: (context) => const DashboardScreen()), // Navigate to main screen
         );
       }
     }

@@ -1,9 +1,9 @@
+import 'package:Elivatme/Screens/Welcome/intro_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Elivatme/Screens/Dashboard/Tabs/home.dart';
 import 'package:Elivatme/Screens/Dashboard/Tabs/lift_usage_log.dart';
-import 'package:Elivatme/Screens/Main%20Screen/MainScreen.dart';
-import 'package:Elivatme/Screens/Main%20Screen/settings.dart';
+import 'package:Elivatme/Screens/Dashboard/components/settings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:Elivatme/Screens/My_Profile/page/profile_page.dart';
 import 'package:Elivatme/Screens/My_Profile/utils/user_preferences.dart';
@@ -72,9 +72,9 @@ class MyApp extends StatelessWidget {
                     // '/': (context) => const WelcomeScreen(),
                     // '/login': (context) => const LoginScreen(),
                     // '/main': (context) => const MainScreen(),
-                    '/': (context) => const MainScreen(),
+                    '/':(context) => const IntroScreen(),
 
-                    '/dashboard': (context) => const DashboardScreen(),
+                    '/Dashboard': (context) => const DashboardScreen(),
                     '/settings': (context) => const SettingsScreen(),
                     '/profile': (context) => const ProfilePage(),
                     '/usage': (context) => const LiftUsageLogScreen(),
