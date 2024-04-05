@@ -35,23 +35,23 @@ class _IntroScreenState extends State<IntroScreen> {
   final List<Map<String, dynamic>> _pages = [
   {
     'color': '#ffe24e',
-    'title': 'Hmmm, Healthy food',
-    'image': 'assets/images/image1.png',
-    'description': "A variety of foods made by the best chef. Ingredients are easy to find, all delicious flavors can only be found at cookbunda",
+    'title': 'Hmmm, Welcome On To The Board ',
+    'image': 'assets/images/image1.jpg',
+    'description': "Welcome to Sky Way ",
     'skip': true
   },
   {
     'color': '#a3e4f1',
-    'title': 'Fresh Drinks, Stay Fresh',
-    'image': 'assets/images/image2.png',
-    'description': 'Not all food, we provide clear healthy drink options for you. Fresh taste always accompanies you',
+    'title': 'As Quick As Xoloright',
+    'image': 'assets/images/image2.jpeg',
+    'description': 'make our services useful',
     'skip': true
   },
   {
     'color': '#31b77a',
-    'title': 'Let\'s Cooking',
-    'image': 'assets/images/image3.png',
-    'description': 'Are you ready to make a dish for your friends or family? create an account and cooks',
+    'title': 'Let\'s Begin Then',
+    'image': 'assets/images/image3.jpeg',
+    'description': 'Are you ready to to use our services with your friends & family? create an account and Begin',
     'skip': false
   },
 ];

@@ -26,125 +26,135 @@ class _LoginFormState extends State<LoginForm> {
   bool obscurePassword = true;
   bool isLoading = false;
 
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
+@override
+Widget build(BuildContext context) {
+  return Form(
+    key: formKey,
+    child: Column(
+      children: [
+        TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
+          cursorColor: kPrimaryColor,
+          onSaved: (value) => email = value!,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your email';
+            } else if (!_isValidEmail(value)) {
+              return 'Enter a valid email address';
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            hintText: "Your email",
+            prefixIcon: Padding(
+              padding: EdgeInsets.all(defaultPadding),
+              child: Icon(Icons.person),
+            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15), // Adjust padding here
+            border: OutlineInputBorder( // Make the container for the text input field visible
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        SizedBox(height: defaultPadding / 2), // Add spacing between fields
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: defaultPadding / 2),
+          child: TextFormField(
+            controller: _passwordController,
+            textInputAction: TextInputAction.done,
+            obscureText: obscurePassword,
             cursorColor: kPrimaryColor,
-            onSaved: (value) => email = value!,
+            onSaved: (value) => password = value!,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your email';
-              } else if (!_isValidEmail(value)) {
-                return 'Enter a valid email address';
+                return 'Please enter your password';
+              } else if (value.length < 8) {
+                return 'Password must be at least 8 characters long';
               }
               return null;
             },
-            decoration: const InputDecoration(
-              hintText: "Your email",
+            decoration: InputDecoration(
+              hintText: "Your password",
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    obscurePassword = !obscurePassword;
+                  });
+                },
+                icon: Icon(obscurePassword
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15), // Adjust padding here
+              border: OutlineInputBorder( // Make the container for the text input field visible
+                borderRadius: BorderRadius.circular(8),
+              ),
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
+                child: Icon(Icons.lock),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: TextFormField(
-              controller: _passwordController,
-              textInputAction: TextInputAction.done,
-              obscureText: obscurePassword,
-              cursorColor: kPrimaryColor,
-              onSaved: (value) => password = value!,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your password';
-                } else if (value.length < 8) {
-                  return 'Password must be at least 8 characters long';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                hintText: "Your password",
-                suffixIcon: IconButton(
-                  onPressed: () {
+        ),
+        SizedBox(height: defaultPadding), // Add spacing between fields
+        ElevatedButton(
+          onPressed: isLoading
+              ? null
+              : () async {
+                  if (formKey.currentState?.validate() ?? false) {
                     setState(() {
-                      obscurePassword = !obscurePassword;
+                      isLoading = true;
                     });
-                  },
-                  icon: Icon(obscurePassword
-                      ? Icons.visibility
-                      : Icons.visibility_off),
-                ),
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: defaultPadding),
-          ElevatedButton(
-            onPressed: isLoading
-                ? null
-                : () async {
-                    if (formKey.currentState?.validate() ?? false) {
-                      setState(() {
-                        isLoading = true;
-                      });
 
-                      formKey.currentState!.save();
+                    formKey.currentState!.save();
 
-                      try {
-                        final user =
-                            await _authService.signInWithEmailAndPassword(email, password);
-                        if (user != null) {
-                          Fluttertoast.showToast(msg: "Login is Successful");
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const DashboardScreen()),
-                          );
-                        } else {
-                          Fluttertoast.showToast(msg: "Invalid credentials");
-                        }
-                      } catch (e) {
-                        print("Login Error: $e");
-                        Fluttertoast.showToast(
-                            msg: "An error occurred during login");
-                      } finally {
-                        setState(() {
-                          isLoading = false;
-                        });
+                    try {
+                      final user =
+                          await _authService.signInWithEmailAndPassword(email, password);
+                      if (user != null) {
+                        Fluttertoast.showToast(msg: "Login is Successful");
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const DashboardScreen()),
+                        );
+                      } else {
+                        Fluttertoast.showToast(msg: "Invalid credentials");
                       }
+                    } catch (e) {
+                      print("Login Error: $e");
+                      Fluttertoast.showToast(
+                          msg: "An error occurred during login");
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
-                  },
-            child: isLoading
-                ? const CircularProgressIndicator()
-                : Text("Login".toUpperCase()),
-          ),
-          const SizedBox(height: defaultPadding),
-          AlreadyHaveAnAccountCheck(
-            press: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const SignUpScreen();
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+                  }
+                },
+          child: isLoading
+              ? const CircularProgressIndicator()
+              : Text("Login".toUpperCase()),
+        ),
+        SizedBox(height: defaultPadding), // Add spacing between fields
+        AlreadyHaveAnAccountCheck(
+          press: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const SignUpScreen();
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
 
   // bool _isValidEmail(String email) {
   //   // You can implement your email format validation logic here

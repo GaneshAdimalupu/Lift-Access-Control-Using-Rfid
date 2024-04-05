@@ -1,5 +1,5 @@
-import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
 import 'package:Elivatme/Screens/Login/login_screen.dart';
 import 'package:Elivatme/services/authentication_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,7 +8,7 @@ import '../../../constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({super.key});
+  const SignUpForm({Key? key}) : super(key: key);
 
   @override
   _SignUpFormState createState() => _SignUpFormState();
@@ -32,93 +32,128 @@ class _SignUpFormState extends State<SignUpForm> {
       key: formKey,
       child: Column(
         children: [
-          TextFormField(
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            onSaved: (value) => email = value!,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your email';
-              } else if (!isValidEmail(value)) {
-                signUpError = 'Enter a valid email address';
-                return signUpError;
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              hintText: "Your email",
-              errorText: emailError,
-              prefixIcon: const Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: BoxDecoration(
+              color: kPrimaryLightColor,
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => email = value!,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                } else if (!isValidEmail(value)) {
+                  signUpError = 'Enter a valid email address';
+                  return signUpError;
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.person,
+                  color: kPrimaryColor,
+                ),
+                hintText: "Your email",
+                border: InputBorder.none,
               ),
             ),
           ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            onSaved: (value) => fullName = value!,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your full name';
-              }
-              return null;
-            },
-            decoration: const InputDecoration(
-              hintText: "Your full name",
-              prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: BoxDecoration(
+              color: kPrimaryLightColor,
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => fullName = value!,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your full name';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.person,
+                  color: kPrimaryColor,
+                ),
+                hintText: "Your full name",
+                border: InputBorder.none,
               ),
             ),
           ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            onSaved: (value) => collegeID = value!,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your college ID';
-              }
-              return null;
-            },
-            decoration: const InputDecoration(
-              hintText: "Your college ID",
-              prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.school),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: BoxDecoration(
+              color: kPrimaryLightColor,
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => collegeID = value!,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your college ID';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.school,
+                  color: kPrimaryColor,
+                ),
+                hintText: "Your college ID",
+                border: InputBorder.none,
               ),
             ),
           ),
-          const SizedBox(height: defaultPadding),
-          TextFormField(
-            textInputAction: TextInputAction.done,
-            obscureText: true,
-            cursorColor: kPrimaryColor,
-            onSaved: (value) => password = value!,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your password';
-              } else if (value.length < 6) {
-                return 'Password must be at least 6 characters long';
-              }
-              return passwordError;
-            },
-            decoration: InputDecoration(
-              hintText: "Your password",
-              errorText: passwordError,
-              prefixIcon: const Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.lock),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: BoxDecoration(
+              color: kPrimaryLightColor,
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextFormField(
+              textInputAction: TextInputAction.done,
+              obscureText: true,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => password = value!,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                } else if (value.length < 6) {
+                  return 'Password must be at least 6 characters long';
+                }
+                return passwordError;
+              },
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.lock,
+                  color: kPrimaryColor,
+                ),
+                hintText: "Your password",
+                border: InputBorder.none,
               ),
             ),
           ),
-          const SizedBox(height: defaultPadding),
+          SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () async {
               if (formKey.currentState?.validate() ?? false) {
@@ -145,7 +180,7 @@ class _SignUpFormState extends State<SignUpForm> {
             },
             child: Text("Sign Up".toUpperCase()),
           ),
-          const SizedBox(height: defaultPadding),
+          SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
             press: () {
               Navigator.push(
