@@ -6,13 +6,11 @@ class NumbersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          buildButton(context, '4.8', 'Ranking'),
-          buildDivider(),
-          buildButton(context, '35', 'Following'),
-          buildDivider(),
-          buildButton(context, '50', 'Followers'),
-        ],
+        // children: <Widget>[
+        //   buildButton(context, '4.8', 'Ranking'),
+        //   buildDivider(),
+        //   buildButton(context, '35', 'Following'),
+        // ],
       );
   Widget buildDivider() => const SizedBox(
         height: 24,

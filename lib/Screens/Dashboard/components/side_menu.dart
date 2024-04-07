@@ -1,51 +1,48 @@
-import 'package:Elivatme/Screens/Lift%20Access/elivator_use.dart';
-import 'package:Elivatme/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:Elivatme/Screens/Lift%20Access/elivator_use.dart';
 import 'settings.dart';
 
 class SideMenu extends StatelessWidget {
-  const SideMenu({Key? key});
+  const SideMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
         color: const Color(0xFF1B0E41),
-        child: Theme(
-          data: MyThemes.lightTheme,
-          child: ListView(
-            children: [
-              DrawerHeader(
-                child: Image.asset("assets/images/logo_light.png"),
-              ),
-              DrawerListTile(
-                title: "Settings",
-                svgSrc: "assets/icons/menu_setting.svg",
-                press: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsScreen(),
-                  ),
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: Image.asset("assets/images/logo_light.png"),
+            ),
+            DrawerListTile(
+              title: "Settings",
+              svgSrc: "assets/icons/menu_setting.svg",
+              press: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
                 ),
               ),
-              DrawerListTile(
-                title: "Use Lift",
-                svgSrc: "assets/icons/menu_setting.svg",
-                press: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ElevatorPage(numberOfFloors: 5,),
-                  ),
+            ),
+            DrawerListTile(
+              title: "Use Lift",
+              svgSrc: "assets/icons/menu_setting.svg",
+              press: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ElevatorPage(numberOfFloors: 5,),
                 ),
               ),
-              DrawerListTile(
-                title: "Logout",
-                svgSrc: "assets/icons/menu_setting.svg",
-                press: () => _handleLogout(context),
-              ),
-            ],
-          ),
+            ),
+            DrawerListTile(
+              title: "Logout",
+              svgSrc: "assets/icons/menu_setting.svg",
+              press: () => _handleLogout(context),
+            ),
+          ],
         ),
       ),
     );
@@ -64,10 +61,7 @@ class DrawerListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Brightness themeBrightness = Theme.of(context).brightness;
-    final Color textColor = themeBrightness == Brightness.dark
-        ? const Color.fromARGB(255, 255, 255, 255)
-        : const Color.fromARGB(255, 255, 255, 255);
+
 
     return ListTile(
       onTap: press,
@@ -75,12 +69,12 @@ class DrawerListTile extends StatelessWidget {
       leading: SvgPicture.asset(
         svgSrc,
         height: 16,
-        color: textColor,
+        
       ),
       title: Text(
         title,
         style: TextStyle(
-          color: textColor,
+          color: Color.fromARGB(255, 255, 255, 255)
         ),
       ),
     );

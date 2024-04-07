@@ -14,7 +14,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  
   late File _imageFile; // Variable to store the selected image file
 
   // Function to pick an image from gallery
@@ -34,13 +33,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Function to upload the selected image to Firestore
   Future<void> _uploadImage(String userId) async {
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
-    final storageRef = FirebaseStorage.instance.ref().child('user_images').child('$userId.jpg');
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('user_images')
+        .child('$userId.jpg');
 
     await storageRef.putFile(_imageFile);
     final imageUrl = await storageRef.getDownloadURL();
 
     await userRef.update({'profileImageUrl': imageUrl});
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +82,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             );
           }
-
           return ListView.builder(
             itemCount: users.length,
             itemBuilder: (context, index) {
@@ -96,7 +97,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text("Edit Profile Image"),
-                          content: Text("Do you want to update your profile image?"),
+                          content:
+                              Text("Do you want to update your profile image?"),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
@@ -108,7 +110,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onPressed: () async {
                                 Navigator.of(context).pop();
                                 await _pickImage(); // Pick an image from gallery
-                                await _uploadImage(docID); // Upload the image to Firestore
+                                await _uploadImage(
+                                    docID); // Upload the image to Firestore
                               },
                               child: Text("Update"),
                             ),
@@ -123,13 +126,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? NetworkImage(profileImageUrl)
                         : null, // Display the uploaded image if available
                     child: profileImageUrl == null
-                        ? const Icon(Icons.person) // Display default icon if no image
+                        ? const Icon(
+                            Icons.person) // Display default icon if no image
                         : null,
                   ),
                 ),
                 title: Text(
                   userData['fullName'] ?? 'Unknown',
                   style: const TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
                     fontWeight: FontWeight.bold,
                   ),
                 ),

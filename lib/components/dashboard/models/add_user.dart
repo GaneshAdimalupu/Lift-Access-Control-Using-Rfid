@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +13,14 @@ class AddUserDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Choose Action'),
+      backgroundColor: Color.fromRGBO(0, 0, 0, 0.98),
+      title: Text(
+        'Choose Action',
+        style: TextStyle(
+          color: Colors.white, // Set text color to white
+        ),
+        textAlign: TextAlign.center,
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -39,49 +44,112 @@ class AddUserDialog extends StatelessWidget {
 
   void _showAddUserDialog(BuildContext context) async {
     Navigator.of(context).pop(); // Dismiss the current dialog
-    await showDialog(
+    showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add User'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _fullNameController,
-                decoration: const InputDecoration(labelText: 'Full Name'),
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Make the background transparent
+          insetPadding: EdgeInsets.symmetric(horizontal: 40), // Adjust dialog padding
+          elevation: 0, // Remove dialog shadow
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(0, 0, 0, 0.98),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Add User',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _fullNameController,
+                    labelText: 'Full Name',
+                  ),
+                  SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _emailController,
+                    labelText: 'Email',
+                  ),
+                  SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _collegeIdController,
+                    labelText: 'College ID',
+                  ),
+                  SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _documentIdController,
+                    labelText: 'Document ID',
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      _buildDialogButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        label: 'Cancel',
+                      ),
+                      SizedBox(width: 10),
+                      _buildDialogButton(
+                        onPressed: () async {
+                          await _addUserToFirestore(context);
+                          Navigator.of(context).pop(); // Close dialog after adding user
+                        },
+                        label: 'Add',
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-              ),
-              TextField(
-                controller: _collegeIdController,
-                decoration: const InputDecoration(labelText: 'College ID'),
-              ),
-              TextField(
-                controller: _documentIdController,
-                decoration: const InputDecoration(labelText: 'Document ID'),
-              ),
-            ],
+            ),
           ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTextField({required TextEditingController controller, required String labelText}) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: TextStyle(color: Colors.white),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(10),
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              await _addUserToFirestore(context);
-              Navigator.of(context).pop(); // Close dialog after adding user
-            },
-            child: const Text('Add'),
-          ),
-        ],
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
+      style: TextStyle(color: Colors.white),
+    );
+  }
+
+  Widget _buildDialogButton({required VoidCallback onPressed, required String label}) {
+    return TextButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all(Colors.white),
+        backgroundColor: MaterialStateProperty.all(Colors.transparent),
+        overlayColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.hovered)) return Colors.white.withOpacity(0.2);
+          return null;
+        }),
+      ),
+      child: Text(label),
     );
   }
 
@@ -91,7 +159,10 @@ class AddUserDialog extends StatelessWidget {
     final collegeID = _collegeIdController.text.trim();
     final documentID = _documentIdController.text.trim();
 
-    if (fullName.isEmpty || email.isEmpty || collegeID.isEmpty || documentID.isEmpty) {
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        collegeID.isEmpty ||
+        documentID.isEmpty) {
       Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
@@ -113,37 +184,64 @@ class AddUserDialog extends StatelessWidget {
     Navigator.of(context).pop(); // Dismiss the current dialog
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Use Lift'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _documentIdController,
-              decoration: const InputDecoration(labelText: 'Document ID'),
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Make the background transparent
+          insetPadding: EdgeInsets.symmetric(horizontal: 40), // Adjust dialog padding
+          elevation: 0, // Remove dialog shadow
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(0, 0, 0, 0.98),
+              borderRadius: BorderRadius.circular(20),
             ),
-            TextField(
-              controller: _collegeIdController,
-              decoration: const InputDecoration(labelText: 'College ID'),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Use Lift',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20),
+                _buildTextField(
+                  controller: _documentIdController,
+                  labelText: 'Document ID',
+                ),
+                SizedBox(height: 10),
+                _buildTextField(
+                  controller: _collegeIdController,
+                  labelText: 'College ID',
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _buildDialogButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      label: 'Cancel',
+                    ),
+                    SizedBox(width: 10),
+                    _buildDialogButton(
+                      onPressed: () {
+                        _logLiftUsage(context);
+                        Navigator.of(context).pop(); // Close dialog after logging lift usage
+                      },
+                      label: 'Use Lift',
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Cancel'),
           ),
-          TextButton(
-            onPressed: () {
-              _logLiftUsage(context);
-              Navigator.of(context).pop(); // Close dialog after logging lift usage
-            },
-            child: const Text('Use Lift'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -200,4 +298,3 @@ class AddUserDialog extends StatelessWidget {
     }
   }
 }
-

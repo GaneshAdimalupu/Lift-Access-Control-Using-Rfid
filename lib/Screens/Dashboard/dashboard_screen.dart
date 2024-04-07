@@ -48,7 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       key: context.read<MenuAppController>().scaffoldKey,
       drawer: const SideMenu(),
-      backgroundColor: Color(0xFF1B0E41), // Set background color here
+      backgroundColor: const Color(0xFF1B0E41), // Set background color here
       body: SafeArea(
         child: Column(
           children: [
@@ -68,27 +68,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SmoothScreen(),
                   LiftUsageLogScreen()
                 ],
+                // Customize page transition
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
               ),
             ),
             if (Responsive.isMobile(context))
-              BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outlined),
-                    label: 'Users',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.add_chart_rounded),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.data_usage),
-                    label: 'Usage Log',
-                  ),
-                ],
-                currentIndex: _currentIndex,
-                onTap: _onItemTapped,
-                selectedItemColor: Colors.blue, // Customize selected item color
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                decoration: BoxDecoration(
+                  color: Colors.transparent, // Set background color to transparent
+                  border: Border.all(color: Colors.transparent), // Set border color to transparent
+                ),
+                child: BottomNavigationBar(
+                  backgroundColor: Colors.transparent, // Set background color to transparent
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person_outlined),
+                      label: 'Users',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.add_chart_rounded),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.data_usage),
+                      label: 'Usage Log',
+                    ),
+                  ],
+                  currentIndex: _currentIndex,
+                  onTap: _onItemTapped,
+                  selectedItemColor: Color.fromARGB(255, 202, 22, 230), // Set selected item color
+                  unselectedItemColor: Colors.white, // Set unselected item color
+                ),
               ),
           ],
         ),

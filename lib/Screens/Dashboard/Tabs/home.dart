@@ -232,22 +232,30 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                DropdownButton<ChartType>(
-                  value: _selectedChartType,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedChartType = value!;
-                    });
-                  },
-                  items: ChartType.values.map((type) {
-                    return DropdownMenuItem<ChartType>(
-                      value: type,
-                      child: Text(
-                        type.toString(),
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    );
-                  }).toList(),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(0, 63, 63, 127),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: DropdownButton<ChartType>(
+                    dropdownColor: Color.fromARGB(0, 20, 20, 21),
+                    value: _selectedChartType,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedChartType = value!;
+                      });
+                    },
+                    items: ChartType.values.map((type) {
+                      return DropdownMenuItem<ChartType>(
+                        value: type,
+                        child: Text(
+                          type.toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Container(
@@ -329,6 +337,10 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,
             labelAlignment: ChartDataLabelAlignment.outer,
+            textStyle: TextStyle(
+              // Set text style for data labels
+              color: Colors.white,
+            ), // Set text color to white
           ),
           borderRadius: BorderRadius.circular(10),
           color: Colors.blueAccent,
@@ -348,6 +360,7 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
         majorGridLines: const MajorGridLines(width: 0),
         majorTickLines: const MajorTickLines(color: Colors.green),
         axisLine: const AxisLine(color: Colors.blue),
+        labelStyle: TextStyle(color: Colors.white),
       ),
       primaryYAxis: NumericAxis(
         minimum: 0,
@@ -356,6 +369,7 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
         majorGridLines: const MajorGridLines(width: 0),
         majorTickLines: const MajorTickLines(color: Colors.green),
         axisLine: const AxisLine(color: Colors.red),
+        labelStyle: TextStyle(color: Colors.white),
       ),
       plotAreaBorderWidth: 0,
       series: <ChartSeries>[
@@ -366,6 +380,10 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
           dataLabelSettings: const DataLabelSettings(
             isVisible: true,
             labelAlignment: ChartDataLabelAlignment.outer,
+            textStyle: TextStyle(
+              // Set text style for data labels
+              color: Colors.white, // Set text color to white
+            ),
           ),
           color: Colors.blueAccent,
         ),

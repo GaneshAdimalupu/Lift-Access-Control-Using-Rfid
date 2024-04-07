@@ -14,8 +14,13 @@ class LiftUsageLogScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF1B0E41),
-        title: const Text('Lift Usage Log'),
+        title: const Text(
+          'Lift Usage Log',
+          style: TextStyle(color: Colors.white), // Set text color to white
+        ),
         centerTitle: true,
+        iconTheme:
+            IconThemeData(color: Colors.white), // Set icon color to white
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
@@ -55,7 +60,8 @@ class LiftUsageLogScreen extends StatelessWidget {
 
   Future<void> _downloadPDF(BuildContext context) async {
     final pdf = pw.Document();
-    final List<LiftUsage> liftUsageData = await FirestoreService.getLiftUsageData();
+    final List<LiftUsage> liftUsageData =
+        await FirestoreService.getLiftUsageData();
 
     if (liftUsageData.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -73,7 +79,8 @@ class LiftUsageLogScreen extends StatelessWidget {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text('Lift Usage Log',
-                  style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+                  style: pw.TextStyle(
+                      fontSize: 20, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 20),
               for (final liftUsage in liftUsageData)
                 pw.Column(
@@ -134,6 +141,7 @@ class LiftUsageCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        color: Color.fromRGBO(30, 30, 30, .95),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
@@ -141,7 +149,10 @@ class LiftUsageCard extends StatelessWidget {
             children: [
               Text(
                 'College ID: ${liftUsage.collegeID}',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
               ),
               SizedBox(height: 8),
               Text(

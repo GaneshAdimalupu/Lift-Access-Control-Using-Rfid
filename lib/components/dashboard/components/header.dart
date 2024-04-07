@@ -1,6 +1,7 @@
-import 'package:Elivatme/Screens/My_Profile/page/profile_page.dart';
+import 'package:Elivatme/Screens/My%20Profile/user_login_details.dart';
 import 'package:Elivatme/components/dashboard/controller/menu_app_controller.dart';
 import 'package:Elivatme/responsive.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -29,7 +30,7 @@ class Header extends StatelessWidget {
           if (!Responsive.isMobile(context))
             Text(
               "Dashboard",
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -54,7 +55,6 @@ class Header extends StatelessWidget {
     
   }
 }
-
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
     Key? key,
@@ -63,45 +63,51 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfilePage()),
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance.collection('app_users').doc(user!.uid).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        final Map<String, dynamic>? userData = snapshot.data?.data() as Map<String, dynamic>?; // Specify the type as Map<String, dynamic>
+
+        final profileImageUrl = userData?['profileImageUrl'] as String? ?? ''; // Ensure profileImageUrl is of type String
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserDetailsPage(user: user),
+              ),
+            );
+          },
+          child: Row(
+            children: [
+              Hero(
+                tag: 'profilePic',
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.white,
+                  backgroundImage: profileImageUrl.isNotEmpty
+                      ? NetworkImage(profileImageUrl)
+                      : AssetImage('assets/default_profile_image.png') as ImageProvider, // Ensure correct type
+                ),
+              ),
+              if (!Responsive.isMobile(context))
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                ),
+            ],
+          ),
         );
       },
-      child: Row(
-        children: [
-          Hero(
-            tag: 'profilePic', // Unique tag for the Hero animation
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.white,
-              backgroundImage: user != null
-                  ? NetworkImage(
-                      // Use the user's profile picture URL from Firestore
-                      'https://console.firebase.google.com/u/1/project/lift-access-control/storage/lift-access-control.appspot.com/files/${user.uid}.jpg',
-                    )
-                  : null,
-              child: user == null
-                  ? const Icon(
-                      LineAwesomeIcons.user,
-                      color: Color(0xFF1B0E41),
-                    )
-                  : null,
-            ),
-          ),
-          if (!Responsive.isMobile(context))
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 8), // Adjusted horizontal padding
-              child: Text(
-                "Angelina Jolie",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
