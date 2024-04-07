@@ -29,7 +29,7 @@ class Header extends StatelessWidget {
           if (!Responsive.isMobile(context))
             Text(
               "Dashboard",
-              style: Theme.of(context).textTheme.headline6!.copyWith(
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

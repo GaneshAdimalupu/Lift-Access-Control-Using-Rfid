@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:Elivatme/components/dashboard/components/header.dart';
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:Elivatme/Screens/smooth%20page/src/effects/jumping_dot_effect.dart';
 import 'package:Elivatme/Screens/smooth%20page/src/smooth_page_indicator.dart';
-import 'package:Elivatme/constants.dart';
-import 'package:Elivatme/main.dart';
+import 'package:Elivatme/components/dashboard/components/header.dart';
 import 'package:Elivatme/services/firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class SmoothScreen extends StatelessWidget {
@@ -20,48 +16,26 @@ class SmoothScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeNotifier>(
-      builder: (context, themeNotifier, _) {
-        final themeMode = themeNotifier.getThemeMode();
-
-        return ThemeProvider(
-          initTheme: MyThemes.lightTheme,
-          duration: const Duration(milliseconds: 500),
-          builder: (context, themeSwitcher) {
-            final Brightness systemBrightness =
-                MediaQuery.of(context).platformBrightness;
-
-            return MaterialApp(
-              theme: themeMode == ThemeMode.dark ||
-                      systemBrightness == Brightness.dark
-                  ? MyThemes.darkTheme
-                  : MyThemes.lightTheme,
-              home: Scaffold(
-                backgroundColor: Color(0xFF1B0E41), // Set background color here
-                body: SafeArea(
-                  child: Column(
-                    children: [
-                      Header(),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: HomePage(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+    return Scaffold(
+      backgroundColor: Color(0xFF1B0E41),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Header(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: HomePage(),
               ),
-              debugShowCheckedModeBanner: false, // Remove debug banner
-            );
-          },
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -99,8 +73,6 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       Fluttertoast.showToast(msg: 'Error retrieving user data: $e');
-      // Log error for debugging
-      Fluttertoast.showToast(msg: "Error retrieving user data:");
     }
   }
 
@@ -136,18 +108,15 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   'Name: ${userData['fullName']}',
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255)),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 Text(
                   'Email: ${userData['email']}',
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255)),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 Text(
                   'College ID: ${userData['collegeID']}',
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255)),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -191,7 +160,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class StackedRadialBarChart extends StatefulWidget {
-  const StackedRadialBarChart({super.key});
+  const StackedRadialBarChart({Key? key});
 
   @override
   _StackedRadialBarChartState createState() => _StackedRadialBarChartState();
@@ -200,7 +169,7 @@ class StackedRadialBarChart extends StatefulWidget {
 class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
   late Future<List<LiftUsage>> _liftUsageFuture;
   late Future<int> _userCountFuture;
-  ChartType _selectedChartType = ChartType.column; // Default chart type
+  ChartType _selectedChartType = ChartType.column;
 
   @override
   void initState() {
@@ -221,15 +190,12 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
           return const Center(child: Text('No lift usage data available.'));
         }
 
-        // Group lift usage data by date and calculate total count for each date
         Map<String, int> liftUsageByDate = {};
         for (var liftUsage in snapshot.data!) {
           String date = DateFormat('dd/MM').format(liftUsage.timestamp);
-          liftUsageByDate[date] =
-              (liftUsageByDate[date] ?? 0) + 1; // Increment count for each date
+          liftUsageByDate[date] = (liftUsageByDate[date] ?? 0) + 1;
         }
 
-        // Sort liftUsageByDate map keys by date
         var sortedKeys = liftUsageByDate.keys.toList()
           ..sort((a, b) {
             var aDate = DateFormat('dd/MM').parse(a);
@@ -242,8 +208,7 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
           value: (key) => liftUsageByDate[key]!,
         );
 
-        // Adding padding at the beginning and end
-        sortedLiftUsageByDate = addPadding(sortedLiftUsageByDate);
+        sortedLiftUsageByDate = _addPadding(sortedLiftUsageByDate);
 
         return FutureBuilder<int>(
           future: _userCountFuture,
@@ -261,7 +226,9 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
                 const SizedBox(height: 16),
                 Text(
                   'Over All Lift Usage',
-                  style: Theme.of(context).textTheme.titleLarge!,
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
+                        color: Colors.white,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -275,7 +242,10 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
                   items: ChartType.values.map((type) {
                     return DropdownMenuItem<ChartType>(
                       value: type,
-                      child: Text(type.toString()),
+                      child: Text(
+                        type.toString(),
+                        style: TextStyle(color: Colors.white),
+                      ),
                     );
                   }).toList(),
                 ),
@@ -286,8 +256,7 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: SizedBox(
-                      width: (sortedLiftUsageByDate.length - 2) *
-                          80.0, // Adjust width based on number of dates
+                      width: (sortedLiftUsageByDate.length - 2) * 80.0,
                       height: 300,
                       child: _buildChart(
                         sortedLiftUsageByDate,
@@ -301,7 +270,9 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     'User Lift Usage Pie Chart',
-                    style: Theme.of(context).textTheme.titleLarge!,
+                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                          color: Colors.white,
+                        ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -324,9 +295,6 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
         return _buildColumnChart(liftUsageByDate);
       case ChartType.line:
         return _buildLineChart(liftUsageByDate);
-      // case ChartType.lineByHour:
-      //   return _buildLineChartByHour(liftUsageByDate);
-      // Add more chart types as needed
     }
   }
 
@@ -341,6 +309,7 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
         majorGridLines: const MajorGridLines(width: 0),
         majorTickLines: const MajorTickLines(color: Colors.green),
         axisLine: const AxisLine(color: Colors.blue),
+        labelStyle: TextStyle(color: Colors.white),
       ),
       primaryYAxis: NumericAxis(
         minimum: 0,
@@ -349,6 +318,7 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
         majorGridLines: const MajorGridLines(width: 0),
         majorTickLines: const MajorTickLines(color: Colors.green),
         axisLine: const AxisLine(color: Colors.red),
+        labelStyle: TextStyle(color: Colors.white),
       ),
       plotAreaBorderWidth: 0,
       series: <ChartSeries>[
@@ -403,12 +373,9 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
     );
   }
 
-
-  Map<String, int> addPadding(Map<String, int> data) {
-    // Add padding at the beginning
+  Map<String, int> _addPadding(Map<String, int> data) {
     Map<String, int> paddedData = {'': 0};
     paddedData.addAll(data);
-    // Add padding at the end
     paddedData[' '] = 0;
     return paddedData;
   }
@@ -417,8 +384,6 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
 enum ChartType {
   column,
   line,
-  // lineByHour,
-  // Add more chart types as needed
 }
 
 class StackedRadialBarChartWidget extends StatelessWidget {
@@ -426,7 +391,7 @@ class StackedRadialBarChartWidget extends StatelessWidget {
   final int userCount;
 
   const StackedRadialBarChartWidget(this.liftUsageData, this.userCount,
-      {super.key});
+      {Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -451,6 +416,9 @@ class StackedRadialBarChartWidget extends StatelessWidget {
             isVisible: true,
             overflowMode: LegendItemOverflowMode.wrap,
             position: LegendPosition.bottom,
+            textStyle: TextStyle(
+              color: Colors.white,
+            ),
           ),
           series: <CircularSeries<UserUsageData, String>>[
             PieSeries<UserUsageData, String>(
@@ -469,10 +437,10 @@ class StackedRadialBarChartWidget extends StatelessWidget {
   Color _getUserColor(String userName) {
     final random = Random(userName.hashCode);
     return Color.fromRGBO(
-      random.nextInt(256), // Red component (0-255)
-      random.nextInt(256), // Green component (0-255)
-      random.nextInt(256), // Blue component (0-255)
-      1, // Opacity (0.0-1.0)
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+      1,
     );
   }
 }

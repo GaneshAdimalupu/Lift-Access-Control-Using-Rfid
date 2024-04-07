@@ -2,53 +2,50 @@ import 'package:Elivatme/Screens/Lift%20Access/elivator_use.dart';
 import 'package:Elivatme/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'settings.dart'; // Assuming you have the SettingsScreen widget in a separate file
+import 'settings.dart';
 
 class SideMenu extends StatelessWidget {
-  const SideMenu({super.key});
+  const SideMenu({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Theme(
-        data: MyThemes.lightTheme, // Use your light theme
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: Image.asset("assets/images/logo.png"),
-            ),
-            DrawerListTile(
-              title: "Settings",
-              svgSrc: "assets/icons/menu_setting.svg",
-              press: () {
-                Navigator.push(
+      child: Container(
+        color: const Color(0xFF1B0E41),
+        child: Theme(
+          data: MyThemes.lightTheme,
+          child: ListView(
+            children: [
+              DrawerHeader(
+                child: Image.asset("assets/images/logo_light.png"),
+              ),
+              DrawerListTile(
+                title: "Settings",
+                svgSrc: "assets/icons/menu_setting.svg",
+                press: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const SettingsScreen(),
                   ),
-                );
-              },
-            ),
-            DrawerListTile(
-              title: "Use Lift",
-              svgSrc: "assets/icons/menu_setting.svg",
-              press: () {
-                Navigator.push(
+                ),
+              ),
+              DrawerListTile(
+                title: "Use Lift",
+                svgSrc: "assets/icons/menu_setting.svg",
+                press: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ElevatorPage(numberOfFloors: 5,),
                   ),
-                );
-              },
-            ),
-            DrawerListTile(
-              title: "Logout",
-              svgSrc: "assets/icons/menu_setting.svg",
-              press: () {
-                _handleLogout(context); // Call the logout handler method
-              },
-            ),
-          ],
+                ),
+              ),
+              DrawerListTile(
+                title: "Logout",
+                svgSrc: "assets/icons/menu_setting.svg",
+                press: () => _handleLogout(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -57,7 +54,6 @@ class SideMenu extends StatelessWidget {
 
 class DrawerListTile extends StatelessWidget {
   const DrawerListTile({
-    super.key,
     required this.title,
     required this.svgSrc,
     required this.press,
@@ -68,8 +64,8 @@ class DrawerListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness themeBrightness = Theme.of(context).brightness;
-    Color textColor = themeBrightness == Brightness.dark
+    final Brightness themeBrightness = Theme.of(context).brightness;
+    final Color textColor = themeBrightness == Brightness.dark
         ? const Color.fromARGB(255, 255, 255, 255)
         : const Color.fromARGB(255, 255, 255, 255);
 
@@ -92,7 +88,5 @@ class DrawerListTile extends StatelessWidget {
 }
 
 void _handleLogout(BuildContext context) {
-  // Add your logout logic here
-  // For example, you can navigate to the login screen:
   Navigator.pushReplacementNamed(context, '/login');
 }
