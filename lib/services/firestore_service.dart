@@ -7,10 +7,10 @@ class FirestoreService {
   static Future<void> addUser({
     required String fullName,
     required String email,
-    required String collegeID,
+    required num collegeID,
   }) async {
     try {
-      await _firestore.collection('users').doc(collegeID).set({
+      await _firestore.collection('users').doc(email).set({
         'fullName': fullName,
         'email': email,
         'collegeID': collegeID,
@@ -27,26 +27,25 @@ class FirestoreService {
       // Delete lift usage data associated with the user
       await _firestore
           .collection('lift usage')
-          .where('collegeID', isEqualTo: docId)
+          .where('email', isEqualTo: docId)
           .get()
           .then((querySnapshot) {
         for (var doc in querySnapshot.docs) {
           doc.reference.delete();
         }
       });
-      Fluttertoast.showToast(msg: "User and associated data deleted successfully");
+      Fluttertoast.showToast(
+          msg: "User and associated data deleted successfully");
     } catch (e) {
       Fluttertoast.showToast(msg: "Error deleting user: $e");
     }
   }
 
-
-
-  static Future<void> logLiftUsage(String collegeID) async {
+  static Future<void> logLiftUsage(String email) async {
     try {
       // Add current timestamp to the lift usage collection under the corresponding user
       await _firestore.collection('lift usage').add({
-        'collegeID': collegeID,
+        'collegeID': email,
         'timestamp': Timestamp.now(),
       });
       Fluttertoast.showToast(msg: "Lift usage logged successfully");
@@ -72,7 +71,7 @@ class FirestoreService {
       QuerySnapshot querySnapshot = await _firestore.collection('users').get();
       for (var doc in querySnapshot.docs) {
         // Extracting collegeID, email, and timestamp from Firestore document
-        String collegeID = doc['collegeID'].toString();
+        num collegeID = doc['collegeID'];
         String email = doc['email'].toString();
         List<dynamic> liftUsageList = doc['liftUsage'];
         String fullName = doc['fullName'].toString();
@@ -94,7 +93,7 @@ class FirestoreService {
 
 class LiftUsage {
   final DateTime timestamp;
-  final String collegeID;
+  final num collegeID;
   final int usageCount;
   final String fullName;
   final String email; // Add email property
@@ -107,7 +106,7 @@ class LiftUsage {
     return timestamp;
   }
 
-  String getCollegeID() {
+  num getcollegeID() {
     return collegeID;
   }
 

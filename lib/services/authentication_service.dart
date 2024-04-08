@@ -39,7 +39,7 @@
 //     String email,
 //     String password,
 //     String fullName,
-//     String collegeID,
+//     num collegeID,
 //   ) async {
 //     try {
 //       UserCredential authResult = await _auth.createUserWithEmailAndPassword(
@@ -134,7 +134,7 @@ class AuthenticationService {
     String email,
     String password,
     String fullName,
-    String collegeID,
+    num collegeID,
   ) async {
     try {
       final UserCredential authResult =

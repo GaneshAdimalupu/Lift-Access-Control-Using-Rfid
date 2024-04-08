@@ -39,7 +39,12 @@ class LiftUsageLogScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No lift usage data available.'));
+              return const Center(
+                  child: Text(
+                "No lift usage data available.",
+                style: TextStyle(
+                    color: Colors.white), // Set the text color to white
+              ));
             }
             // Sort lift usage data by timestamp in descending order
             snapshot.data!.sort((a, b) => b.timestamp.compareTo(a.timestamp));

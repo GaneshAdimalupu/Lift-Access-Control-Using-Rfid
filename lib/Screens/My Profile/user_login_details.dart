@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 class UserDetailsPage extends StatelessWidget {
   final User? user;
 
@@ -51,7 +52,7 @@ class UserDetailsPage extends StatelessWidget {
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: FirebaseFirestore.instance
             .collection('app_users')
-            .doc(user!.uid)
+            .doc(user!.email)
             .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -85,7 +86,7 @@ class UserDetailsPage extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'CollegeID: ${userData?['collegeId'] ?? "Unknown"}',
+                  'collegeID: ${userData?['collegeID'] ?? "Unknown"}',
                   style: TextStyle(fontSize: 18),
                 ),
               ],

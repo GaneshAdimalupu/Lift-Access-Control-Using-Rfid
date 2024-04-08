@@ -20,7 +20,7 @@ class _SignUpFormState extends State<SignUpForm> {
   late String email;
   late String password;
   late String fullName;
-  late String collegeID;
+  late num collegeID;
 
   String? emailError;
   String? passwordError;
@@ -105,7 +105,7 @@ class _SignUpFormState extends State<SignUpForm> {
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               cursorColor: kPrimaryColor,
-              onSaved: (value) => collegeID = value!,
+              onSaved: (value) => collegeID = int.parse(value!),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your college ID';
@@ -207,10 +207,10 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   Future<void> saveUserDataToFirestore(
-      String docId, String email, String fullName, String collegeID) async {
+      String docId, String email, String fullName, num collegeID) async {
     try {
       // Set document ID equal to college ID
-      final documentID = collegeID;
+      final documentID = email;
 
       // Save data to 'app_users' collection
       await FirebaseFirestore.instance

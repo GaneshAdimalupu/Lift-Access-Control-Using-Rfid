@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AddUserDialog extends StatelessWidget {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _collegeIdController = TextEditingController();
+  final TextEditingController _collegeIDController = TextEditingController();
   final TextEditingController _documentIdController = TextEditingController();
 
   AddUserDialog({super.key});
@@ -84,7 +84,7 @@ class AddUserDialog extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   _buildTextField(
-                    controller: _collegeIdController,
+                    controller: _collegeIDController,
                     labelText: 'College ID',
                   ),
                   SizedBox(height: 20),
@@ -157,14 +157,12 @@ class AddUserDialog extends StatelessWidget {
   Future<void> _addUserToFirestore(BuildContext context) async {
     final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
-    final collegeID = _collegeIdController.text.trim();
+    final collegeID = _collegeIDController.text.trim();
 
     // Set document ID equal to college ID
-    final documentID = collegeID;
+    final documentID = email;
 
-    if (fullName.isEmpty ||
-        email.isEmpty ||
-        collegeID.isEmpty) {
+    if (fullName.isEmpty || email.isEmpty || collegeID.isEmpty) {
       Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
@@ -248,7 +246,7 @@ class AddUserDialog extends StatelessWidget {
   void _logLiftUsage(BuildContext context) async {
     try {
       String documentId = _documentIdController.text;
-      String collegeID = documentId; // Set collegeID equal to documentId
+      num collegeID = documentId as num; // Set collegeID equal to documentId
 
       // Check if the document ID exists in the users collection
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance

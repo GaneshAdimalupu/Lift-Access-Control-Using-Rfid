@@ -187,7 +187,12 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No lift usage data available.'));
+          return const Center(
+              child: Text(
+            'No lift usage data available.',
+            style:
+                TextStyle(color: Colors.white), // Set the text color to white
+          ));
         }
 
         Map<String, int> liftUsageByDate = {};
