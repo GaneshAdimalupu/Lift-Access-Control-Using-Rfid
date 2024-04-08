@@ -54,8 +54,7 @@ class Header extends StatelessWidget {
     );
     
   }
-}
-class ProfileCard extends StatelessWidget {
+}class ProfileCard extends StatelessWidget {
   const ProfileCard({
     Key? key,
   }) : super(key: key);
@@ -75,9 +74,10 @@ class ProfileCard extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         }
 
-        final Map<String, dynamic>? userData = snapshot.data?.data() as Map<String, dynamic>?; // Specify the type as Map<String, dynamic>
+        final userData = snapshot.data?.data() as Map<String, dynamic>?;
 
-        final profileImageUrl = userData?['profileImageUrl'] as String? ?? ''; // Ensure profileImageUrl is of type String
+        // Extract profileImageUrl safely
+        final profileImageUrl = userData?['profileImageUrl'] as String?;
 
         return GestureDetector(
           onTap: () {
@@ -95,9 +95,10 @@ class ProfileCard extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 20,
                   backgroundColor: Colors.white,
-                  backgroundImage: profileImageUrl.isNotEmpty
-                      ? NetworkImage(profileImageUrl)
-                      : AssetImage('assets/default_profile_image.png') as ImageProvider, // Ensure correct type
+                  // Use profileImageUrl safely
+                  backgroundImage: profileImageUrl != null && profileImageUrl.isNotEmpty
+                      ? NetworkImage(profileImageUrl) as ImageProvider
+                      : AssetImage('assets/default_profile_image.png'),
                 ),
               ),
               if (!Responsive.isMobile(context))
@@ -111,6 +112,7 @@ class ProfileCard extends StatelessWidget {
     );
   }
 }
+
 
 class SearchField extends StatelessWidget {
   const SearchField({Key? key}) : super(key: key);

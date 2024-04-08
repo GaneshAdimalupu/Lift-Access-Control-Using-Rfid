@@ -1,3 +1,6 @@
+import 'package:Elivatme/Screens/Dashboard/Tabs/lift_usage_log.dart';
+import 'package:Elivatme/Screens/Dashboard/Tabs/users.dart';
+import 'package:Elivatme/Screens/My%20Profile/profile_widget.dart';
 import 'package:Elivatme/Screens/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +18,6 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-
   runApp(
     MultiProvider(
       providers: [
@@ -31,6 +33,12 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  void _handleProfileClicked(BuildContext context) {
+    // Add your logic here for when the profile is clicked
+    // For example, you can navigate to the My Profile screen
+    Navigator.pushNamed(context, '/My Profile');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,8 +46,15 @@ class MyApp extends StatelessWidget {
       title: 'Lift Access',
       initialRoute: '/', // Set the initial route to '/'
       routes: {
-        // '/':(context) => WelcomeScreen()
-        '/': (context) => const DashboardScreen(),
+        '/': (context) => WelcomeScreen(),
+        '/Dash Board': (context) => const DashboardScreen(),
+        '/Lift User Profile': (context) => const ProfileScreen(),
+        '/Lift Usage Log': (context) => const LiftUsageLogScreen(),
+        '/My Profile': (context) => ProfileWidget(
+              imagePath: '', // Provide an image path here if needed
+              onClicked: () => _handleProfileClicked(
+                  context), // Provide the onClicked function
+            ),
         // Define other routes here if needed
       },
     );
