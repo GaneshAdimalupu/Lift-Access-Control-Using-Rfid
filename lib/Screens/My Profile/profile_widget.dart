@@ -27,7 +27,7 @@ class ProfileWidget extends StatelessWidget {
                   ? (imagePath.contains('https://')
                       ? NetworkImage(imagePath) as ImageProvider<Object>
                       : FileImage(File(imagePath)) as ImageProvider<Object>)
-                  : AssetImage('assets/default_profile_image.png'),
+                  : AssetImage('assets/default_profile.jpg'),
             ),
           ),
           child: Stack(

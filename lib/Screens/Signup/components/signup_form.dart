@@ -166,7 +166,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   collegeID,
                 );
                 if (user != null) {
-                  await saveUserDataToFirestore(user.uid);
+                  await saveUserDataToFirestore(
+                      user.uid, email, fullName, collegeID);
                   Fluttertoast.showToast(msg: "User is Successfully Created");
                   Navigator.pushReplacement(
                     context,
@@ -205,12 +206,28 @@ class _SignUpFormState extends State<SignUpForm> {
     return RegExp(emailRegex).hasMatch(email);
   }
 
-  Future<void> saveUserDataToFirestore(String userId) async {
+  Future<void> saveUserDataToFirestore(
+      String docId, String email, String fullName, String collegeID) async {
     try {
-      await FirebaseFirestore.instance.collection('app_users').doc(userId).set({
+      // Set document ID equal to college ID
+      final documentID = collegeID;
+
+      // Save data to 'app_users' collection
+      await FirebaseFirestore.instance
+          .collection('app_users')
+          .doc(documentID)
+          .set({
         'email': email,
         'fullName': fullName,
         'collegeID': collegeID,
+      });
+
+      // Save the same data to 'users' collection
+      await FirebaseFirestore.instance.collection('users').doc(documentID).set({
+        'email': email,
+        'fullName': fullName,
+        'collegeID': collegeID,
+        'liftUsage': [], // Initialize lift usage as an empty list
       });
     } catch (error) {
       print('Error saving user data to Firestore: $error');

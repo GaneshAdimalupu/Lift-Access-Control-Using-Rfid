@@ -8,14 +8,12 @@ class FirestoreService {
     required String fullName,
     required String email,
     required String collegeID,
-    required String docID,
   }) async {
     try {
-      await _firestore.collection('users').add({
+      await _firestore.collection('users').doc(collegeID).set({
         'fullName': fullName,
         'email': email,
         'collegeID': collegeID,
-        'docID': docID,
       });
       Fluttertoast.showToast(msg: "User added successfully");
     } catch (e) {

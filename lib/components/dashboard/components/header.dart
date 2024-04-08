@@ -98,7 +98,7 @@ class Header extends StatelessWidget {
                   // Use profileImageUrl safely
                   backgroundImage: profileImageUrl != null && profileImageUrl.isNotEmpty
                       ? NetworkImage(profileImageUrl) as ImageProvider
-                      : AssetImage('assets/default_profile_image.png'),
+                      : AssetImage('assets/default_profile.jpg'),
                 ),
               ),
               if (!Responsive.isMobile(context))

@@ -49,8 +49,10 @@ class AddUserDialog extends StatelessWidget {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.transparent, // Make the background transparent
-          insetPadding: EdgeInsets.symmetric(horizontal: 40), // Adjust dialog padding
+          backgroundColor:
+              Colors.transparent, // Make the background transparent
+          insetPadding:
+              EdgeInsets.symmetric(horizontal: 40), // Adjust dialog padding
           elevation: 0, // Remove dialog shadow
           child: Container(
             padding: EdgeInsets.all(20),
@@ -85,11 +87,6 @@ class AddUserDialog extends StatelessWidget {
                     controller: _collegeIdController,
                     labelText: 'College ID',
                   ),
-                  SizedBox(height: 10),
-                  _buildTextField(
-                    controller: _documentIdController,
-                    labelText: 'Document ID',
-                  ),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -104,7 +101,8 @@ class AddUserDialog extends StatelessWidget {
                       _buildDialogButton(
                         onPressed: () async {
                           await _addUserToFirestore(context);
-                          Navigator.of(context).pop(); // Close dialog after adding user
+                          Navigator.of(context)
+                              .pop(); // Close dialog after adding user
                         },
                         label: 'Add',
                       ),
@@ -119,7 +117,8 @@ class AddUserDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField({required TextEditingController controller, required String labelText}) {
+  Widget _buildTextField(
+      {required TextEditingController controller, required String labelText}) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
@@ -138,14 +137,16 @@ class AddUserDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildDialogButton({required VoidCallback onPressed, required String label}) {
+  Widget _buildDialogButton(
+      {required VoidCallback onPressed, required String label}) {
     return TextButton(
       onPressed: onPressed,
       style: ButtonStyle(
         foregroundColor: MaterialStateProperty.all(Colors.white),
         backgroundColor: MaterialStateProperty.all(Colors.transparent),
         overlayColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.hovered)) return Colors.white.withOpacity(0.2);
+          if (states.contains(MaterialState.hovered))
+            return Colors.white.withOpacity(0.2);
           return null;
         }),
       ),
@@ -157,12 +158,13 @@ class AddUserDialog extends StatelessWidget {
     final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
     final collegeID = _collegeIdController.text.trim();
-    final documentID = _documentIdController.text.trim();
+
+    // Set document ID equal to college ID
+    final documentID = collegeID;
 
     if (fullName.isEmpty ||
         email.isEmpty ||
-        collegeID.isEmpty ||
-        documentID.isEmpty) {
+        collegeID.isEmpty) {
       Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
@@ -187,8 +189,10 @@ class AddUserDialog extends StatelessWidget {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.transparent, // Make the background transparent
-          insetPadding: EdgeInsets.symmetric(horizontal: 40), // Adjust dialog padding
+          backgroundColor:
+              Colors.transparent, // Make the background transparent
+          insetPadding:
+              EdgeInsets.symmetric(horizontal: 40), // Adjust dialog padding
           elevation: 0, // Remove dialog shadow
           child: Container(
             padding: EdgeInsets.all(20),
@@ -212,11 +216,6 @@ class AddUserDialog extends StatelessWidget {
                   controller: _documentIdController,
                   labelText: 'Document ID',
                 ),
-                SizedBox(height: 10),
-                _buildTextField(
-                  controller: _collegeIdController,
-                  labelText: 'College ID',
-                ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -231,7 +230,8 @@ class AddUserDialog extends StatelessWidget {
                     _buildDialogButton(
                       onPressed: () {
                         _logLiftUsage(context);
-                        Navigator.of(context).pop(); // Close dialog after logging lift usage
+                        Navigator.of(context)
+                            .pop(); // Close dialog after logging lift usage
                       },
                       label: 'Use Lift',
                     ),
@@ -248,7 +248,7 @@ class AddUserDialog extends StatelessWidget {
   void _logLiftUsage(BuildContext context) async {
     try {
       String documentId = _documentIdController.text;
-      String collegeID = _collegeIdController.text;
+      String collegeID = documentId; // Set collegeID equal to documentId
 
       // Check if the document ID exists in the users collection
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
@@ -263,7 +263,7 @@ class AddUserDialog extends StatelessWidget {
 
           // Update the list with new lift usage
           currentUsage.add({
-            //'collegeID': collegeID,
+            'collegeID': collegeID,
             'timestamp': Timestamp.now(),
           });
 
