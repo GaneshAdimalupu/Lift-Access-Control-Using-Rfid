@@ -157,12 +157,15 @@ class AddUserDialog extends StatelessWidget {
   Future<void> _addUserToFirestore(BuildContext context) async {
     final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
-    final collegeID = _collegeIDController.text.trim();
+    final collegeIDText = _collegeIDController.text.trim();
+
+    // Convert collegeID from String to num using tryParse
+  final num? collegeID = num.tryParse(collegeIDText);
 
     // Set document ID equal to college ID
     final documentID = email;
 
-    if (fullName.isEmpty || email.isEmpty || collegeID.isEmpty) {
+    if (fullName.isEmpty || email.isEmpty || collegeID==null) {
       Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
@@ -212,7 +215,7 @@ class AddUserDialog extends StatelessWidget {
                 SizedBox(height: 20),
                 _buildTextField(
                   controller: _documentIdController,
-                  labelText: 'Document ID',
+                  labelText: 'Email',
                 ),
                 SizedBox(height: 20),
                 Row(
@@ -246,29 +249,31 @@ class AddUserDialog extends StatelessWidget {
   void _logLiftUsage(BuildContext context) async {
     try {
       String documentId = _documentIdController.text;
-      num collegeID = documentId as num; // Set collegeID equal to documentId
 
       // Check if the document ID exists in the users collection
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .doc(documentId)
+          .where('email', isEqualTo: documentId) // Query by email
           .get();
-      if (documentSnapshot.exists) {
-        // Document ID found, get current lift usage list
+      if (querySnapshot.docs.isNotEmpty) {
+        // Document ID found, get first document
+        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+
+        // Get current lift usage list
         dynamic data = documentSnapshot.data();
         if (data != null && data.containsKey('liftUsage')) {
           List<dynamic> currentUsage = data['liftUsage'];
 
           // Update the list with new lift usage
           currentUsage.add({
-            'collegeID': collegeID,
+            'collegeID': documentSnapshot['collegeID'],
             'timestamp': Timestamp.now(),
           });
 
           // Update the Firestore document with the modified lift usage list
           await FirebaseFirestore.instance
               .collection('users')
-              .doc(documentId)
+              .doc(documentSnapshot.id)
               .update({
             'liftUsage': currentUsage,
           });
@@ -277,11 +282,11 @@ class AddUserDialog extends StatelessWidget {
           // If 'liftUsage' field does not exist, create it with the new lift usage
           await FirebaseFirestore.instance
               .collection('users')
-              .doc(documentId)
+              .doc(documentSnapshot.id)
               .update({
             'liftUsage': [
               {
-                'collegeID': collegeID,
+                'collegeID': documentSnapshot['collegeID'],
                 'timestamp': Timestamp.now(),
               }
             ],
@@ -289,7 +294,7 @@ class AddUserDialog extends StatelessWidget {
           Fluttertoast.showToast(msg: "Lift usage logged successfully");
         }
       } else {
-        Fluttertoast.showToast(msg: "Document ID not found");
+        Fluttertoast.showToast(msg: "Email not found");
       }
     } catch (e) {
       Fluttertoast.showToast(msg: "Error logging lift usage: $e");

@@ -1,4 +1,4 @@
-import 'package:Elivatme/Screens/Login/login_screen.dart';
+import 'package:Elivatme/Screens/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 class IntroWidget extends StatelessWidget {
@@ -113,7 +113,7 @@ class IntroWidget extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const LoginScreen(),
+                                builder: (context) => WelcomeScreen(),
                               ),
                             );
                           },

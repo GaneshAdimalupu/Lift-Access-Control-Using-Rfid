@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants.dart';
 
 class WelcomeImage extends StatelessWidget {
   const WelcomeImage({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +21,13 @@ class WelcomeImage extends StatelessWidget {
             const Spacer(),
             Expanded(
               flex: 8,
-              child: SvgPicture.asset(
-                "assets/icons/chat.svg",
+              child: Image.asset(
+
+                "assets/images/logo_light.png",
+                height: 200,
+                width: 200,
+                // You might need to adjust the path based on your project structure
+                // Make sure the image path is correct
               ),
             ),
             const Spacer(),
