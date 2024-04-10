@@ -2,7 +2,7 @@
 import 'package:Elivatme/Users/Screens/components/already_have_an_account_acheck.dart';
 import 'package:Elivatme/Users/Screens/Dashboard/dashboard_screen.dart';
 import 'package:Elivatme/Users/Screens/Signup/signup_screen.dart';
-import 'package:Elivatme/services/authentication_service.dart';
+import 'package:Elivatme/Users/Services/authentication_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';

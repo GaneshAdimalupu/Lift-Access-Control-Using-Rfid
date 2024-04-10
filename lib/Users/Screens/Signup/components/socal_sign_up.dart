@@ -1,8 +1,8 @@
 import 'package:Elivatme/Admin/Screens/Dashboard/dashboard_screen.dart';
 import 'package:Elivatme/Users/Screens/Signup/components/or_divider.dart';
 import 'package:Elivatme/Users/Screens/Signup/components/social_icon.dart';
+import 'package:Elivatme/Users/Services/authentication_service.dart';
 import 'package:flutter/material.dart';
-import 'package:Elivatme/services/authentication_service.dart'; // Import your authentication service
 
 
 class SocalSignUp extends StatelessWidget {

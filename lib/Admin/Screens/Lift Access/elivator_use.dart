@@ -94,9 +94,3 @@ class _ElevatorPageState extends State<ElevatorPage> {
     );
   }
 }
-
-void main() {
-  runApp(MaterialApp(
-    home: ElevatorPage(numberOfFloors: 5), // Change the number of floors as needed
-  ));
-}

@@ -1,8 +1,8 @@
 import 'package:Elivatme/Users/Screens/components/already_have_an_account_acheck.dart';
 import 'package:Elivatme/Users/Screens/Dashboard/dashboard_screen.dart';
 import 'package:Elivatme/Users/Screens/Login/login_screen.dart';
+import 'package:Elivatme/Users/Services/authentication_service.dart';
 import 'package:flutter/material.dart';
-import 'package:Elivatme/services/authentication_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -166,7 +166,7 @@ class _SignUpFormState extends State<SignUpForm> {
               textInputAction: TextInputAction.next,
               cursorColor: kPrimaryColor,
               validator: (value) {
-                if (value != '111' ) {
+                if (value != '111') {
                   return 'Please enter User Key';
                 }
                 return null;
@@ -199,9 +199,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   Fluttertoast.showToast(msg: "User is Successfully Created");
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const DashboardScreen('/Users')),
+                    MaterialPageRoute(
+                        builder: (_) => const DashboardScreen('/Users')),
                   );
-                  // TODO: Navigate or update UI accordingly
                 } else {
                   Fluttertoast.showToast(msg: "Invalid credentials");
                 }
@@ -235,10 +235,17 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   Future<void> saveUserDataToFirestore(
-      String docId, String email, String fullName, num collegeID) async {
+    String docId,
+    String email,
+    String fullName,
+    num collegeID,
+  ) async {
     try {
-      // Set document ID equal to college ID
+      // Set document ID equal to email
       final documentID = email;
+
+      // Default role
+      final defaultRole = 'user';
 
       // Save data to 'app_users' collection
       await FirebaseFirestore.instance
@@ -248,6 +255,8 @@ class _SignUpFormState extends State<SignUpForm> {
         'email': email,
         'fullName': fullName,
         'collegeID': collegeID,
+        'uid': docId,
+        'role': defaultRole, // Set default role here
       });
 
       // Save the same data to 'users' collection
@@ -255,6 +264,8 @@ class _SignUpFormState extends State<SignUpForm> {
         'email': email,
         'fullName': fullName,
         'collegeID': collegeID,
+        'uid': docId,
+        'role': defaultRole, // Set default role here
         'liftUsage': [], // Initialize lift usage as an empty list
       });
     } catch (error) {

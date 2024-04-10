@@ -36,8 +36,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _currentIndex = index;
       _pageController.animateToPage(
         index,
-        duration:
-            const Duration(milliseconds: 300), // Adjust transition duration as needed
+        duration: const Duration(
+            milliseconds: 300), // Adjust transition duration as needed
         curve: Curves.easeInOut, // Apply a custom curve for smoother animation
       );
     });
@@ -77,11 +77,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
-                  color: Colors.transparent, // Set background color to transparent
-                  border: Border.all(color: Colors.transparent), // Set border color to transparent
+                  color:
+                      Colors.transparent, // Set background color to transparent
+                  border: Border.all(
+                      color: Colors
+                          .transparent), // Set border color to transparent
                 ),
                 child: BottomNavigationBar(
-                  backgroundColor: Colors.transparent, // Set background color to transparent
+                  backgroundColor:
+                      Colors.transparent, // Set background color to transparent
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                       icon: Icon(Icons.person_outlined),
@@ -98,8 +102,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                   currentIndex: _currentIndex,
                   onTap: _onItemTapped,
-                  selectedItemColor: Color.fromARGB(255, 202, 22, 230), // Set selected item color
-                  unselectedItemColor: Colors.white, // Set unselected item color
+                  selectedItemColor: Color.fromARGB(
+                      255, 22, 81, 230), // Set selected item color
+                  unselectedItemColor:
+                      Colors.white, // Set unselected item color
                 ),
               ),
           ],
