@@ -1,14 +1,9 @@
-import 'package:Elivatme/Screens/Dashboard/Tabs/lift_usage_log.dart';
-import 'package:Elivatme/Screens/Dashboard/Tabs/users.dart';
-import 'package:Elivatme/Screens/Login/login_screen.dart';
-import 'package:Elivatme/Screens/My%20Profile/profile_widget.dart';
-import 'package:Elivatme/Screens/Signup/signup_screen.dart';
-import 'package:Elivatme/Screens/Welcome/welcome_screen.dart';
+import 'package:Elivatme/Admin/Screens/My%20Profile/profile_widget.dart';
+import 'package:Elivatme/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:Elivatme/components/dashboard/controller/menu_app_controller.dart';
-import 'package:Elivatme/Screens/Dashboard/dashboard_screen.dart';
+import 'package:Elivatme/Admin/Screens/Dashboard/components/controller/menu_app_controller.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -49,11 +44,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/', // Set the initial route to '/'
       routes: {
         '/': (context) => WelcomeScreen(),
-        '/Login': (context) => const LoginScreen(),
-        '/Sign Up': (context) => const SignUpScreen(),
-        '/Dash Board': (context) => const DashboardScreen(),
-        '/Lift User Profile': (context) => const ProfileScreen(),
-        '/Lift Usage Log': (context) => const LiftUsageLogScreen(),
         '/My Profile': (context) => ProfileWidget(
               imagePath: '', // Provide an image path here if needed
               onClicked: () => _handleProfileClicked(
