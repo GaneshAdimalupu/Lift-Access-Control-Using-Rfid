@@ -153,6 +153,34 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
           ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: MediaQuery.of(context).size.width * 0.8,
+            decoration: BoxDecoration(
+              color: kPrimaryLightColor,
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              validator: (value) {
+                if (value != '111' ) {
+                  return 'Please enter User Key';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.school,
+                  color: kPrimaryColor,
+                ),
+                hintText: "User Key",
+                border: InputBorder.none,
+              ),
+            ),
+          ),
           SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () async {

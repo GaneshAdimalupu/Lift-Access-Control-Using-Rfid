@@ -7,14 +7,14 @@ import 'components/sign_up_top_image.dart';
 import 'components/signup_form.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Background(
+    return Background(
       child: SingleChildScrollView(
         child: Responsive(
-          mobile: MobileSignupScreen(),
+          mobile: const MobileSignupScreen(),
           desktop: Row(
             children: [
               Expanded(
@@ -29,7 +29,7 @@ class SignUpScreen extends StatelessWidget {
                       child: SignUpForm(),
                     ),
                     SizedBox(height: defaultPadding / 2),
-                    // SocalSignUp()
+                    SocalSignUp(),
                   ],
                 ),
               )
@@ -42,16 +42,14 @@ class SignUpScreen extends StatelessWidget {
 }
 
 class MobileSignupScreen extends StatelessWidget {
-  const MobileSignupScreen({
-    super.key,
-  });
+  const MobileSignupScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        SignUpScreenTopImage(),
+        const SignUpScreenTopImage(),
         Row(
           children: [
             Spacer(),
@@ -62,7 +60,7 @@ class MobileSignupScreen extends StatelessWidget {
             Spacer(),
           ],
         ),
-         SocalSignUp()
+        // const SocalSignUp(),
       ],
     );
   }
