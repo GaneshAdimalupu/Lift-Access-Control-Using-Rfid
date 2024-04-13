@@ -4,6 +4,7 @@ import 'package:Elivatme/Users/Screens/Login/login_screen.dart';
 import 'package:Elivatme/Users/Services/authentication_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -182,32 +183,47 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
           ),
           SizedBox(height: defaultPadding),
-          ElevatedButton(
-            onPressed: () async {
-              if (formKey.currentState?.validate() ?? false) {
-                formKey.currentState!.save();
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  if (formKey.currentState?.validate() ?? false) {
+                    formKey.currentState!.save();
 
-                final user = await _authService.signUpWithEmailAndPassword(
-                  email,
-                  password,
-                  fullName,
-                  collegeID,
-                );
-                if (user != null) {
-                  await saveUserDataToFirestore(
-                      user.uid, email, fullName, collegeID);
-                  Fluttertoast.showToast(msg: "User is Successfully Created");
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const DashboardScreen('/Users')),
-                  );
-                } else {
-                  Fluttertoast.showToast(msg: "Invalid credentials");
-                }
-              }
-            },
-            child: Text("Sign Up".toUpperCase()),
+                    final user = await _authService.signUpWithEmailAndPassword(
+                      email,
+                      password,
+                      fullName,
+                      collegeID,
+                    );
+                    if (user != null) {
+                      await saveUserDataToFirestore(
+                          user.uid, email, fullName, collegeID);
+                      Fluttertoast.showToast(
+                          msg: "User is Successfully Created");
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const DashboardScreen('/Users')),
+                      );
+                    } else {
+                      Fluttertoast.showToast(msg: "Invalid credentials");
+                    }
+                  }
+                },
+                child: Text("Sign Up".toUpperCase()),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final Uri _whatsappLaunchUri =
+                      Uri.parse('https://wa.me/916303205936');
+                  launch(_whatsappLaunchUri.toString());
+                  // Your "Get Key" button logic here
+                },
+                child: Text("Get Key"),
+              ),
+            ],
           ),
           SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(

@@ -1,4 +1,4 @@
-import 'package:Elivatme/Admin/Screens/Lift%20Access/elivator_use.dart';
+import 'package:Elivatme/Admin/Screens/Side%20Menu/elivator_use.dart';
 import 'package:Elivatme/Admin/Screens/Login/login_screen.dart';
 import 'package:Elivatme/Users/Screens/Login/login_screen.dart';
 import 'package:flutter/material.dart';
