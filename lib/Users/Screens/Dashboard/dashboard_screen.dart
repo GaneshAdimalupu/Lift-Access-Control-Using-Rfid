@@ -1,11 +1,11 @@
 import 'package:Elivatme/Admin/Screens/Dashboard/components/controller/menu_app_controller.dart';
 import 'package:Elivatme/Admin/Screens/Dashboard/components/side_menu.dart';
+import 'package:Elivatme/Users/Screens/Dashboard/Tabs/home.dart';
+import 'package:Elivatme/Users/Screens/Dashboard/Tabs/lift_usage_log.dart';
 import 'package:flutter/material.dart';
-import 'package:Elivatme/Admin/Screens/Dashboard/Tabs/lift_usage_log.dart';
 import 'package:Elivatme/responsive.dart';
 import 'package:provider/provider.dart';
 import '../../../../constants.dart';
-import 'Tabs/home.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen(String s, {Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late PageController _pageController;
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _currentIndex = index;
                   });
                 },
-                children: const [
+                children:  [
                   SmoothScreen(),
                   LiftUsageLogScreen()
                 ],

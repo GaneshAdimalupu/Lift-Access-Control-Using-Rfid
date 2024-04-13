@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,8 @@ class AddUserDialog extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _collegeIDController = TextEditingController();
   final TextEditingController _documentIdController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _roleController = TextEditingController();
 
   AddUserDialog({super.key});
 
@@ -87,6 +90,16 @@ class AddUserDialog extends StatelessWidget {
                     controller: _collegeIDController,
                     labelText: 'College ID',
                   ),
+                  SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _passwordController,
+                    labelText: 'Password',
+                  ),
+                  SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _roleController,
+                    labelText: 'Role',
+                  ),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -158,25 +171,54 @@ class AddUserDialog extends StatelessWidget {
     final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
     final collegeIDText = _collegeIDController.text.trim();
+    final password = _passwordController.text.trim(); // Get password
+    final role = _roleController.text.trim(); // Get role from dropdown
 
     // Convert collegeID from String to num using tryParse
-  final num? collegeID = num.tryParse(collegeIDText);
+    final num? collegeID = num.tryParse(collegeIDText);
 
     // Set document ID equal to college ID
     final documentID = email;
 
-    if (fullName.isEmpty || email.isEmpty || collegeID==null) {
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        collegeID == null ||
+        password.isEmpty ||
+        role.isEmpty) {
       Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
-
     try {
+      // First, create the user in Firebase Authentication
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Get the UID of the newly created user
+      String uid = userCredential.user!.uid;
+
+      // Then, add the user details to Firestore to 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(documentID).set({
         'fullName': fullName,
         'email': email,
         'collegeID': collegeID,
+        'role': role,
+        'uid': uid,
         'liftUsage': [], // Initialize lift usage as an empty list
       });
+      // Save data to 'app_users' collection
+      await FirebaseFirestore.instance
+          .collection('app_users')
+          .doc(documentID)
+          .set({
+        'email': email,
+        'fullName': fullName,
+        'collegeID': collegeID,
+        'uid': uid,
+        'role': role, // Set default role here
+      });
+
       Fluttertoast.showToast(msg: 'User added successfully');
     } catch (e) {
       Fluttertoast.showToast(msg: 'Error adding user: $e');

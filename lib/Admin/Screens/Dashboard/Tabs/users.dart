@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:Elivatme/Admin/Screens/Dashboard/components/models/add_user.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:Elivatme/Admin/Screens/Dashboard/components/models/add_user.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -28,15 +27,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (pickedImage != null) {
         _imageFile = File(pickedImage.path);
       } else {
-        print('No image selected.');
+        Fluttertoast.showToast(msg: 'No image selected.');
       }
     });
   }
 
   // Function to upload the selected image to Firestore
   Future<void> _uploadImage(String userId) async {
-    final userRef =
-        FirebaseFirestore.instance.collection('users').doc(userId);
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
     final storageRef = FirebaseStorage.instance
         .ref()
         .child('user_images')
@@ -49,22 +47,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // Function to delete user data from Firestore
-  Future<void> _deleteUserFirestore(String userId) async {
+  Future<void> _deleteFromFirestore(String userId) async {
     await FirebaseFirestore.instance.collection('users').doc(userId).delete();
   }
 
   // Function to delete user from Firebase Authentication
-  Future<void> _deleteUserFirebaseAuth(String userId) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+  Future<void> _deleteFromAuth(String userId) async {
+    final user = await FirebaseAuth.instance.currentUser;
+    if (user != null && user.uid == userId) {
       await user.delete();
     }
   }
 
   // Function to delete user from both Firestore and Firebase Authentication
-  Future<void> _deleteUserBoth(String userId) async {
-    await _deleteUserFirestore(userId);
-    await _deleteUserFirebaseAuth(userId);
+  Future<void> _deleteFromBoth(String userId) async {
+    await _deleteFromFirestore(userId);
+    await _deleteFromAuth(userId);
   }
 
   @override
@@ -114,68 +112,111 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               return Dismissible(
                 key: Key(docID),
-                background: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                secondaryBackground: Container(
-                  color: Color.fromARGB(255, 0, 153, 255),
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
                 confirmDismiss: (direction) async {
-                  if (direction == DismissDirection.endToStart ||
-                      direction == DismissDirection.startToEnd) {
-                    return await showDialog(
+                  if (direction == DismissDirection.endToStart) {
+                    // Show alert dialog to confirm deletion from both Firestore and Firebase Authentication
+                    final result = await showDialog(
                       context: context,
-                      builder: (BuildContext context) {
+                      builder: (context) {
                         return AlertDialog(
                           title: Text("Confirm Deletion"),
-                          content: Text("Are you sure you want to delete this user?"),
+                          content: Text(
+                              "Do you want to delete this user from both Firestore and Firebase Authentication?"),
                           actions: <Widget>[
                             TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(false);
-                              },
-                              child: Text("Cancel"),
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text("Delete"),
                             ),
                             TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(true);
-                              },
-                              child: Text("Delete"),
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text("Cancel"),
                             ),
                           ],
                         );
                       },
                     );
+                    if (result == true) {
+                      await _deleteFromBoth(docID);
+                    }
+                    return result;
+                  } else if (direction == DismissDirection.startToEnd) {
+                    // Show alert dialog to confirm deletion from Firestore only
+                    final result = await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Confirm Deletion"),
+                          content: Text(
+                              "Do you want to delete this user from Firestore only?"),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text("Delete"),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text("Cancel"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    if (result == true) {
+                      await _deleteFromFirestore(docID);
+                    }
+                    return result;
+                  } else {
+                    return false;
                   }
-                  return false;
                 },
-                onDismissed: (direction) async {
-                  if (direction == DismissDirection.endToStart ||
-                      direction == DismissDirection.startToEnd) {
-                    await _deleteUserFirestore(docID); // Delete from Firestore
-                  }
-                },
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                ),
+                secondaryBackground: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                ),
                 child: ListTile(
                   leading: GestureDetector(
                     onTap: () async {
-                      await _pickImage(); // Pick an image from gallery
-                      await _uploadImage(docID); // Upload the image to Firestore
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Edit Profile Image"),
+                            content: Text(
+                                "Do you want to update your profile image?"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Cancel"),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  await _pickImage(); // Pick an image from gallery
+                                  await _uploadImage(
+                                      docID); // Upload the image to Firestore
+                                },
+                                child: Text("Update"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: CircleAvatar(
                       radius: 30,

@@ -64,7 +64,7 @@ class Header extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection('app_users').doc(user!.uid).snapshots(),
+      stream: FirebaseFirestore.instance.collection('app_users').doc(user!.email).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();

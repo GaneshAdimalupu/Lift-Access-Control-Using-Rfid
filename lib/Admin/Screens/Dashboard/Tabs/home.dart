@@ -177,7 +177,6 @@ class _StackedRadialBarChartState extends State<StackedRadialBarChart> {
     _liftUsageFuture = FirestoreService.getLiftUsageData();
     _userCountFuture = FirestoreService.getUserCount();
   }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<LiftUsage>>(

@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:Elivatme/Admin/Services/firestore_service.dart';
 import 'package:intl/intl.dart';
+import 'package:Elivatme/Users/Services/firestore_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -16,11 +17,10 @@ class LiftUsageLogScreen extends StatelessWidget {
         backgroundColor: Color(0xFF1B0E41),
         title: const Text(
           'Lift Usage Log',
-          style: TextStyle(color: Colors.white), // Set text color to white
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        iconTheme:
-            IconThemeData(color: Colors.white), // Set icon color to white
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
@@ -33,7 +33,7 @@ class LiftUsageLogScreen extends StatelessWidget {
       body: Container(
         color: Color(0xFF1B0E41),
         child: FutureBuilder<List<LiftUsage>>(
-          future: FirestoreService.getLiftUsageData(),
+          future: FirestoreService.getLiftUsageDataForCurrentUser(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -42,11 +42,9 @@ class LiftUsageLogScreen extends StatelessWidget {
               return const Center(
                   child: Text(
                 "No lift usage data available.",
-                style: TextStyle(
-                    color: Colors.white), // Set the text color to white
+                style: TextStyle(color: Colors.white),
               ));
             }
-            // Sort lift usage data by timestamp in descending order
             snapshot.data!.sort((a, b) => b.timestamp.compareTo(a.timestamp));
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -66,7 +64,7 @@ class LiftUsageLogScreen extends StatelessWidget {
   Future<void> _downloadPDF(BuildContext context) async {
     final pdf = pw.Document();
     final List<LiftUsage> liftUsageData =
-        await FirestoreService.getLiftUsageData();
+        await FirestoreService.getLiftUsageDataForCurrentUser();
 
     if (liftUsageData.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -138,7 +136,7 @@ class LiftUsageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Add your logic for handling tap on each lift usage card
+        // _navigateToLiftUsageDetails(context);
       },
       child: Card(
         elevation: 4,
@@ -155,9 +153,10 @@ class LiftUsageCard extends StatelessWidget {
               Text(
                 'College ID: ${liftUsage.collegeID}',
                 style: TextStyle(
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
               SizedBox(height: 8),
               Text(
@@ -170,4 +169,14 @@ class LiftUsageCard extends StatelessWidget {
       ),
     );
   }
+  //   void _navigateToLiftUsageDetails(BuildContext context) {
+  //   // You can navigate to a detailed view of the lift usage data here
+  //   // For example, you can use Navigator.push to navigate to a new page
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => LiftUsageDetailsScreen(liftUsage: liftUsage),
+  //     ),
+  //   );
+  // }
 }

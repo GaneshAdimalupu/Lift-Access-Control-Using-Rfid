@@ -122,10 +122,14 @@ class AuthenticationService {
       if (credential.user != null) {
         final userRole = await getUserRole(email);
         print('User role: $userRole'); // Print user role for debugging
-        if (userRole != 'user') {
-          _handleError('Cannot sign in. User role is "user".');
-        } else {
+        if (userRole == 'user') {
           return credential.user;
+
+          // _handleError('Cannot sign in. User role is "user".');
+        } else {
+          _handleError('Cannot sign in. User role is "user".');
+
+          // return credential.user;
         }
       }
     } on FirebaseAuthException catch (e) {
