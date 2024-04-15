@@ -6,8 +6,32 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class LiftUsageLogScreen extends StatelessWidget {
-  const LiftUsageLogScreen({Key? key});
+class LiftUsageLogScreen extends StatefulWidget {
+  const LiftUsageLogScreen({Key? key}) : super(key: key);
+
+  @override
+  _LiftUsageLogScreenState createState() => _LiftUsageLogScreenState();
+}
+
+class _LiftUsageLogScreenState extends State<LiftUsageLogScreen> {
+  bool _isSortedByDate = false;
+  bool _isSortedByName = false;
+  bool _isSortedByCollegeID = false;
+  TextEditingController _searchController = TextEditingController();
+  List<LiftUsage> _liftUsageData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLiftUsageData();
+  }
+
+  Future<void> _loadLiftUsageData() async {
+    final data = await FirestoreService.getLiftUsageData();
+    setState(() {
+      _liftUsageData = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +40,10 @@ class LiftUsageLogScreen extends StatelessWidget {
         backgroundColor: Color(0xFF1B0E41),
         title: const Text(
           'Lift Usage Log',
-          style: TextStyle(color: Colors.white), // Set text color to white
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        iconTheme:
-            IconThemeData(color: Colors.white), // Set icon color to white
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
@@ -28,38 +51,126 @@ class LiftUsageLogScreen extends StatelessWidget {
               _downloadPDF(context);
             },
           ),
+          IconButton(
+            icon: Icon(Icons.sort),
+            onPressed: () {
+              _showSortOptions(context);
+            },
+          ),
         ],
       ),
       body: Container(
         color: Color(0xFF1B0E41),
-        child: FutureBuilder<List<LiftUsage>>(
-          future: FirestoreService.getLiftUsageData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                  child: Text(
-                "No lift usage data available.",
-                style: TextStyle(
-                    color: Colors.white), // Set the text color to white
-              ));
-            }
-            // Sort lift usage data by timestamp in descending order
-            snapshot.data!.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final liftUsage = snapshot.data![index];
-                return LiftUsageCard(
-                  liftUsage: liftUsage,
-                );
-              },
-            );
-          },
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  labelText: 'Search',
+                  labelStyle: TextStyle(color: Colors.white),
+                  prefixIcon: Icon(Icons.search, color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                ),
+                style: TextStyle(color: Colors.white),
+                onChanged: (value) {
+                  _filterData(value);
+                },
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _liftUsageData.length,
+                itemBuilder: (context, index) {
+                  final liftUsage = _liftUsageData[index];
+                  return LiftUsageCard(
+                    liftUsage: liftUsage,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  void _filterData(String query) {
+    setState(() {
+      _liftUsageData = _liftUsageData.where((liftUsage) {
+        final collegeID = liftUsage.collegeID.toString().toLowerCase();
+        final fullName = liftUsage.fullName.toLowerCase();
+        final formattedDate =
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(liftUsage.timestamp);
+        return collegeID.contains(query.toLowerCase()) ||
+            fullName.contains(query.toLowerCase()) ||
+            formattedDate.contains(query.toLowerCase());
+      }).toList();
+    });
+  }
+
+  // Method to sort lift usage data based on selected sorting option
+  List<LiftUsage> _getSortedData(List<LiftUsage> data) {
+    if (_isSortedByDate) {
+      data.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    } else if (_isSortedByName) {
+      data.sort((a, b) => a.fullName.compareTo(b.fullName));
+    } else if (_isSortedByCollegeID) {
+      data.sort((a, b) => a.collegeID.compareTo(b.collegeID));
+    }
+    return data;
+  }
+
+  // Method to show sorting options dialog
+  void _showSortOptions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sort By'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text('Date'),
+                onTap: () {
+                  setState(() {
+                    _isSortedByDate = true;
+                    _isSortedByName = false;
+                    _isSortedByCollegeID = false;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Name'),
+                onTap: () {
+                  setState(() {
+                    _isSortedByDate = false;
+                    _isSortedByName = true;
+                    _isSortedByCollegeID = false;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('College ID'),
+                onTap: () {
+                  setState(() {
+                    _isSortedByDate = false;
+                    _isSortedByName = false;
+                    _isSortedByCollegeID = true;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

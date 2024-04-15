@@ -1,5 +1,6 @@
 import 'package:Elivatme/Admin/Screens/Side%20Menu/contact_us.dart';
 import 'package:Elivatme/Admin/Screens/Side%20Menu/elivator_use.dart';
+import 'package:Elivatme/Admin/Screens/Side%20Menu/maintenance.dart';
 import 'package:Elivatme/Admin/Screens/Side%20Menu/settings.dart';
 import 'package:Elivatme/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,16 @@ class SideMenu extends StatelessWidget {
                   builder: (context) => ElevatorPage(
                     numberOfFloors: 5,
                   ),
+                ),
+              ),
+            ),
+            DrawerListTile(
+              title: "Maintenance",
+              svgSrc: "assets/icons/maintence.svg",
+              press: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MaintenancePage(),
                 ),
               ),
             ),

@@ -53,7 +53,7 @@ class _ElevatorPageState extends State<ElevatorPage> {
                       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: selectedFloor == floorNumber ? Color.fromARGB(255, 255, 0, 183) : Colors.grey.withOpacity(0.5),
+                        color: selectedFloor == floorNumber ? Color.fromARGB(255, 31, 194, 220) : Colors.grey.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Row(

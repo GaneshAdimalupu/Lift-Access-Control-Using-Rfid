@@ -4,7 +4,6 @@ import 'package:Elivatme/responsive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Header extends StatelessWidget {
@@ -41,7 +40,6 @@ class Header extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SearchField(),
                 SizedBox(
                   width: 10,
                 ), // Add some spacing between SearchField and ProfileCard
@@ -114,21 +112,3 @@ class Header extends StatelessWidget {
 }
 
 
-class SearchField extends StatelessWidget {
-  const SearchField({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Implement your search logic here
-        // For now, just print a message
-        print('Perform search');
-      },
-      child: Icon(
-        LineAwesomeIcons.search, // Use LineAwesomeIcons.search as the icon
-        color: Colors.white,
-      ),
-    );
-  }
-}
