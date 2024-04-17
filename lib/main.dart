@@ -44,6 +44,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/', // Set the initial route to '/'
       routes: {
         '/': (context) => WelcomeScreen(),
+
+        // '/': (context) => WelcomeScreen(),
         '/My Profile': (context) => ProfileWidget(
               imagePath: '', // Provide an image path here if needed
               onClicked: () => _handleProfileClicked(

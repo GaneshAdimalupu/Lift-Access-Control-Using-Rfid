@@ -105,7 +105,7 @@ class _GameIdInputState extends State<GameIdInput> {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => MonitoringPage(
-                          ipAddres: _urlController.text,
+                          ipAddress: _urlController.text,
                         ), // Replace with your home screen widget
                       ),
                     );

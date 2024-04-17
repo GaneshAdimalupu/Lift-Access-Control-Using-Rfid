@@ -1,17 +1,17 @@
-import 'package:Elivatme/Use%20Lift/Elevator_access/ipaddres.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 class MonitoringPage extends StatefulWidget {
-  final String ipAddres;
-  const MonitoringPage({super.key, required this.ipAddres});
+  final String ipAddress;
+  const MonitoringPage({Key? key, required this.ipAddress}) : super(key: key);
 
   @override
   _MonitoringPageState createState() => _MonitoringPageState();
 }
 
 class _MonitoringPageState extends State<MonitoringPage> {
+  bool holdingButton = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,118 +19,111 @@ class _MonitoringPageState extends State<MonitoringPage> {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => IpAddress()));
+            Navigator.pop(context);
           },
           child: const Icon(
             Icons.arrow_back,
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: Colors.white,
             size: 32.0,
           ),
         ),
         title: SizedBox(
-            height: 40,
-            child: Center(
-              child: Image.asset(
-                "assets/images/Skyway.png",
-                fit: BoxFit.contain,
-              ),
-            )),
-        actions: [
-          SizedBox(
-            width: 50,
-          )
-        ],
+          height: 40,
+          child: Center(
+            child: Image.asset(
+              "assets/images/Skyway.png",
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
         backgroundColor: Colors.black,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+          padding: const EdgeInsets.fromLTRB(
+              50.0, 450.0, 50.0, 0.0), // Adjust padding here
+          child: Align(
+            alignment: Alignment.bottomCenter, // Place buttons at the bottom
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Column(
                     children: [
-                      _buildButton("assets/images/E4.png", "/control?id=F"),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      _buildButton("assets/images/E3.png", "/control?id=B"),
+                      _buildButton("assets/images/EG.png", "/control?id=F"),
+                      _buildButton("assets/images/E3.png", "/control?id=F"),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Spacer(),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildButton("assets/images/E1.png", "/control?id=R"),
-                const SizedBox(
-                  width: 20,
                 ),
-                _buildButton("assets/images/E2.png", "/control?id=L"),
+                SizedBox(width: 16), // Adjust spacing between columns
+                Expanded(
+                  child: Column(
+                    children: [
+                      _buildButton("assets/images/E1.png", "/control?id=R"),
+                      _buildButton("assets/images/E4.png", "/control?id=L"),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 16), // Adjust spacing between columns
+                Expanded(
+                  child: Column(
+                    children: [
+                      _buildButton("assets/images/E2.png", "/control?id=R"),
+                      _buildButton("assets/images/E5.png", "/control?id=L"),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ],
+          )),
+    );
+  }
+
+  Widget _buildButton(String icon, String command) {
+    return GestureDetector(
+      onTapDown: (_) => _startCommand(command),
+      onTapUp: (_) => _stopCommand(),
+      onTapCancel: () => _stopCommand(),
+      child: Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height / 6, // Adjust button height
+        child: Image.asset(
+          icon,
+          fit: BoxFit.contain,
         ),
       ),
     );
   }
 
-  Widget _buildButton(String icon, command) {
-    bool holdingButton = false;
-
-    Future<void> _sendCommand(String command) async {
-      try {
-        final response = await http.get(
-          Uri.parse('http://${widget.ipAddres + command}'),
-        );
-
-        if (response.statusCode == 200) {
-          print('Command sent successfully: $command');
-        } else {
-          print('Failed to send command: http://${widget.ipAddres + command}');
-        }
-      } catch (error) {
-        print('Error sending command: $error');
-      }
-    }
-
-    Future<void> _delayedStop() async {
-      await Future.delayed(Duration(milliseconds: 200));
-      await _sendCommand('/control?id=S');
-    }
-
-    void _startCommand(String command) {
+  void _startCommand(String command) {
+    if (!holdingButton) {
       _sendCommand(command);
       holdingButton = true;
     }
+  }
 
-    void _stopCommand() {
-      if (holdingButton) {
-        _sendCommand('/control?id=S');
-        holdingButton = false;
-      }
+  void _stopCommand() {
+    if (holdingButton) {
+      _sendCommand('/control?id=S');
+      holdingButton = false;
     }
+  }
 
-    return GestureDetector(
-      onTapDown: (_) => _startCommand(command),
-      onTapUp: (_) => _stopCommand(),
-      child: Container(
-          width: MediaQuery.sizeOf(context).width / 4,
-          height: MediaQuery.sizeOf(context).height / 4,
-          child: Image.asset(
-            icon,
-            fit: BoxFit.contain,
-          )),
-    );
+  Future<void> _sendCommand(String command) async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://${widget.ipAddress}$command'),
+      );
+
+      if (response.statusCode == 200) {
+        print('Command sent successfully: $command');
+      } else {
+        print('Failed to send command: ${response.statusCode}');
+        // Handle error, possibly show a snackbar or dialog
+      }
+    } catch (error) {
+      print('Error sending command: $error');
+      // Handle error, possibly show a snackbar or dialog
+    }
   }
 }
