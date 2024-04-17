@@ -1,7 +1,7 @@
 import 'package:Elivatme/Admin/Screens/Side%20Menu/contact_us.dart';
-import 'package:Elivatme/Admin/Screens/Side%20Menu/elivator_use.dart';
 import 'package:Elivatme/Admin/Screens/Side%20Menu/maintenance.dart';
 import 'package:Elivatme/Admin/Screens/Side%20Menu/settings.dart';
+import 'package:Elivatme/Use%20Lift/Elevator_access/ipaddres.dart';
 import 'package:Elivatme/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -49,8 +49,7 @@ class SideMenu extends StatelessWidget {
               press: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ElevatorPage(
-                    numberOfFloors: 5,
+                  builder: (context) => IpAddress(
                   ),
                 ),
               ),
