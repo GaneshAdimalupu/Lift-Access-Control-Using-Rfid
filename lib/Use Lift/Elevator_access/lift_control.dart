@@ -50,8 +50,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
                 Expanded(
                   child: Column(
                     children: [
-                      _buildButton("assets/images/EG.png", "/control?id=F"),
-                      _buildButton("assets/images/E3.png", "/control?id=F"),
+                      _buildButton("assets/images/EG.png", "/control?id=G"),
+                      _buildButton("assets/images/E3.png", "/control?id=3"),
                     ],
                   ),
                 ),
@@ -59,8 +59,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
                 Expanded(
                   child: Column(
                     children: [
-                      _buildButton("assets/images/E1.png", "/control?id=R"),
-                      _buildButton("assets/images/E4.png", "/control?id=L"),
+                      _buildButton("assets/images/E1.png", "/control?id=1"),
+                      _buildButton("assets/images/E4.png", "/control?id=4"),
                     ],
                   ),
                 ),
@@ -68,8 +68,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
                 Expanded(
                   child: Column(
                     children: [
-                      _buildButton("assets/images/E2.png", "/control?id=R"),
-                      _buildButton("assets/images/E5.png", "/control?id=L"),
+                      _buildButton("assets/images/E2.png", "/control?id=2"),
+                      _buildButton("assets/images/E5.png", "/control?id=5"),
                     ],
                   ),
                 ),

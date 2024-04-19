@@ -4,43 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 class FirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // static Future<void> addUser({
-  //   required String fullName,
-  //   required String email,
-  //   required num collegeID,
-  // }) async {
-  //   try {
-  //     await _firestore.collection('users').doc(email).set({
-  //       'fullName': fullName,
-  //       'email': email,
-  //       'collegeID': collegeID,
-  //     });
-  //     Fluttertoast.showToast(msg: "User added successfully");
-  //   } catch (e) {
-  //     Fluttertoast.showToast(msg: "Error adding user: $e");
-  //   }
-  // }
-
-  // static Future<void> deleteUser(String docId) async {
-  //   try {
-  //     await _firestore.collection('users').doc(docId).delete();
-  //     // Delete lift usage data associated with the user
-  //     await _firestore
-  //         .collection('liftUsage')
-  //         .where('email', isEqualTo: docId)
-  //         .get()
-  //         .then((querySnapshot) {
-  //       for (var doc in querySnapshot.docs) {
-  //         doc.reference.delete();
-  //       }
-  //     });
-  //     Fluttertoast.showToast(
-  //         msg: "User and associated data deleted successfully");
-  //   } catch (e) {
-  //     Fluttertoast.showToast(msg: "Error deleting user: $e");
-  //   }
-  // }
-
   static Future<void> logLiftUsage(String email) async {
     try {
       // Add current timestamp to the lift usage collection under the corresponding user
