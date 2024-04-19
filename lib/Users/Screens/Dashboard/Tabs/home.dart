@@ -2,10 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:Elivatme/Users/Services/firestore_service.dart';
 import 'package:Elivatme/Admin/Screens/Dashboard/components/header.dart';
@@ -44,43 +41,37 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Timer _timer;
-  final PageController _controller = PageController(viewportFraction: 0.8, keepPage: true);
-  Map<String, dynamic>? _userData;
+  late PageController _controller; // Define _controller here
+
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _controller = PageController(
+      viewportFraction: 0.8,
+      keepPage: true,
+      initialPage: 0, // Set initial page to 0
+    );
     _startAutoScroll();
   }
 
   @override
   void dispose() {
     _timer.cancel();
+    _controller.dispose();
     super.dispose();
-  }
-
-  Future<void> _fetchUserData() async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(user.email).get();
-        final userData = userSnapshot.data() as Map<String, dynamic>?; // Explicit cast to Map<String, dynamic>?
-        setState(() {
-          _userData = userData;
-        });
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: 'Error retrieving user data: $e');
-    }
   }
 
   void _startAutoScroll() {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      _controller.nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.ease,
-      );
+      if (_controller.page == 3) {
+        _controller.jumpToPage(0);
+      } else {
+        _controller.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        );
+      }
     });
   }
 
@@ -93,9 +84,10 @@ class _HomePageState extends State<HomePage> {
         SizedBox(
           height: 240,
           child: PageView.builder(
-            itemCount: 1, // Display only one page
-            itemBuilder: (_, __) {
-              return _buildPage();
+            itemCount: 4,
+            controller: _controller,
+            itemBuilder: (_, index) {
+              return _buildPage(index);
             },
           ),
         ),
@@ -104,7 +96,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(top: 16, bottom: 8),
           child: SmoothPageIndicator(
             controller: _controller,
-            count: 1, // Only one page
+            count: 4,
             effect: const JumpingDotEffect(
               dotHeight: 16,
               dotWidth: 16,
@@ -120,39 +112,42 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildPage() {
+  Widget _buildPage(int index) {
+    final List<String> images = [
+      'assets/images/pageview.png',
+      'assets/images/pageview.png',
+      'assets/images/pageview.png',
+      'assets/images/pageview.png',
+    ];
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: const Color.fromARGB(255, 255, 0, 183),
-      ),
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: SizedBox(
         height: 280,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Name: ${_userData?['fullName'] ?? 'Unknown'}',
-                style: const TextStyle(color: Colors.white),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                image: DecorationImage(
+                  image: AssetImage(images[index]),
+                  fit: BoxFit.cover,
+                ),
               ),
-              Text(
-                'Email: ${_userData?['email'] ?? 'Unknown'}',
-                style: const TextStyle(color: Colors.white),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Add any content or widgets you want to display on top of the image
+                  ],
+                ),
               ),
-              Text(
-                'College ID: ${_userData?['collegeID'] ?? 'Unknown'}',
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
 class StackedRadialBarChartWidget extends StatelessWidget {
   const StackedRadialBarChartWidget({Key? key});
 
@@ -167,9 +162,9 @@ class StackedRadialBarChartWidget extends StatelessWidget {
         if (snapshot.hasError || snapshot.data!.isEmpty) {
           return const Center(
               child: Text(
-                'No lift usage data available.',
-                style: TextStyle(color: Colors.white),
-              ));
+            'No lift usage data available.',
+            style: TextStyle(color: Colors.white),
+          ));
         }
 
         Map<String, int> liftUsageByDate = {};
@@ -199,8 +194,8 @@ class StackedRadialBarChartWidget extends StatelessWidget {
             Text(
               'Your Lift Usage',
               style: Theme.of(context).textTheme.headline6!.copyWith(
-                color: Colors.white,
-              ),
+                    color: Colors.white,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -210,22 +205,20 @@ class StackedRadialBarChartWidget extends StatelessWidget {
                 color: Color.fromARGB(0, 63, 63, 127),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: DropdownButton<ChartType>(
-                dropdownColor: Color.fromARGB(0, 20, 20, 21),
-                value: ChartType.column,
-                onChanged: (value) {
-                  // Implement dropdown value change if needed
-                },
-                items: ChartType.values.map((type) {
-                  return DropdownMenuItem<ChartType>(
-                    value: type,
-                    child: Text(
-                      type.toString(),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                }).toList(),
-              ),
+              // child: Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //   children: [
+              //     _buildChartButton('Daily', () {
+              //       // Implement method to fetch daily data
+              //     }),
+              //     _buildChartButton('Monthly', () {
+              //       // Implement method to fetch monthly data
+              //     }),
+              //     _buildChartButton('Yearly', () {
+              //       // Implement method to fetch yearly data
+              //     }),
+              //   ],
+              // ),
             ),
             const SizedBox(height: 16),
             Container(
@@ -244,6 +237,18 @@ class StackedRadialBarChartWidget extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildChartButton(String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(text, style: TextStyle(color: Colors.white)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
     );
   }
 
