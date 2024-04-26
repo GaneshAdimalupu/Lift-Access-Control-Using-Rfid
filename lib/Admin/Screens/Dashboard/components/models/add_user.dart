@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +9,7 @@ class AddUserDialog extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _collegeIDController = TextEditingController();
   final TextEditingController _documentIdController = TextEditingController();
+  final TextEditingController _goToLift = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _roleController = TextEditingController();
 
@@ -207,21 +209,40 @@ class AddUserDialog extends StatelessWidget {
         'uid': uid,
         'liftUsage': [], // Initialize lift usage as an empty list
       });
-      // Save data to 'app_users' collection
-      await FirebaseFirestore.instance
-          .collection('app_users')
-          .doc(documentID)
-          .set({
+
+      // Sanitize email for Realtime Database key
+      String sanitizedEmail = email.replaceAll('.', '_');
+
+      // Add user details to Realtime Database under 'users' node
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(sanitizedEmail);
+      // Initialize 'liftUsage' as an empty list
+      await userRef.set({
+        'fullName': fullName,
+        'uid': uid,
+        'liftUsage': [], // Initialize lift usage as an empty list
+      });
+
+      // Store user data in Realtime Database under 'app_users' node
+      DatabaseReference appUserRef = FirebaseDatabase.instance
+          .reference()
+          .child('app_users')
+          .child(sanitizedEmail);
+
+      await appUserRef.set({
         'email': email,
         'fullName': fullName,
         'collegeID': collegeID,
         'uid': uid,
         'role': role, // Set default role here
+        'liftUsage': [], // Initialize lift usage as an empty list
       });
 
       Fluttertoast.showToast(msg: 'User added successfully');
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Error adding user: $e');
+      print('Error adding user: $e');
     }
   }
 
@@ -260,6 +281,11 @@ class AddUserDialog extends StatelessWidget {
                   labelText: 'Email',
                 ),
                 SizedBox(height: 20),
+                _buildTextField(
+                  controller: _goToLift,
+                  labelText: 'goToLift',
+                ),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -291,6 +317,7 @@ class AddUserDialog extends StatelessWidget {
   void _logLiftUsage(BuildContext context) async {
     try {
       String documentId = _documentIdController.text;
+      String goToLift = _goToLift.text; // Get the value of goToLift
 
       // Check if the document ID exists in the users collection
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -301,45 +328,70 @@ class AddUserDialog extends StatelessWidget {
         // Document ID found, get first document
         DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
 
-        // Get current lift usage list
-        dynamic data = documentSnapshot.data();
-        if (data != null && data.containsKey('liftUsage')) {
-          List<dynamic> currentUsage = data['liftUsage'];
+        // Sanitize email for Realtime Database key
+        String sanitizedEmail = documentSnapshot['email'].replaceAll('.', '_');
 
-          // Update the list with new lift usage
-          currentUsage.add({
-            'collegeID': documentSnapshot['collegeID'],
-            'timestamp': Timestamp.now(),
-          });
+        // Get the current timestamp
+        DateTime now = DateTime.now();
+        String timestamp = '${now.hour}:${now.minute}:${now.second} '
+            '${now.day}/${now.month}/${now.year}';
 
-          // Update the Firestore document with the modified lift usage list
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(documentSnapshot.id)
-              .update({
-            'liftUsage': currentUsage,
-          });
-          Fluttertoast.showToast(msg: "Lift usage logged successfully");
-        } else {
-          // If 'liftUsage' field does not exist, create it with the new lift usage
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(documentSnapshot.id)
-              .update({
-            'liftUsage': [
-              {
-                'collegeID': documentSnapshot['collegeID'],
-                'timestamp': Timestamp.now(),
-              }
-            ],
-          });
-          Fluttertoast.showToast(msg: "Lift usage logged successfully");
-        }
+        // Add the lift usage to the user's node in Realtime Database
+        DatabaseReference userRef = FirebaseDatabase.instance
+            .reference()
+            .child('users')
+            .child(sanitizedEmail)
+            .child('liftUsage');
+
+        // Push the new entry to the lift usage array
+        await userRef.push().set({
+          'timestamp': timestamp,
+          'goToLift': goToLift,
+        });
+
+        // Update the current lift position in Realtime Database
+        updateRealtimeDBLiftPosition(goToLift);
+
+        Fluttertoast.showToast(msg: "Lift usage logged successfully");
       } else {
         Fluttertoast.showToast(msg: "Email not found");
       }
     } catch (e) {
       Fluttertoast.showToast(msg: "Error logging lift usage: $e");
+    }
+  }
+
+  Future<void> updateFirestoreLiftPosition(String liftPosition) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('current_lift')
+            .doc('current_lift_position')
+            .update({'lift_position': liftPosition, 'timestamp': Timestamp.now()});
+        print('Firestore lift position updated: $liftPosition');
+      }
+    } catch (error) {
+      print('Error updating Firestore lift position: $error');
+    }
+  }
+
+  void updateRealtimeDBLiftPosition(String liftPosition) {
+    try {
+      DatabaseReference liftRef =
+          FirebaseDatabase.instance.reference().child('current_lift');
+
+      // Convert the timestamp to milliseconds since Unix epoch
+      int timestamp = Timestamp.now().millisecondsSinceEpoch;
+
+      // Update the 'lift_position' and 'timestamp' fields
+      liftRef.update({
+        'lift_position': liftPosition,
+        'timestamp': timestamp, // Convert to string
+      });
+      print('Realtime Database lift position updated: $liftPosition');
+    } catch (error) {
+      print('Error updating Realtime Database lift position: $error');
     }
   }
 }

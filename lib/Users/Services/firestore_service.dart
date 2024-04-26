@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class FirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   static Future<int> getUserCount() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -45,13 +46,15 @@ class FirestoreService {
                   usage.containsKey('timestamp')) {
                 Timestamp timestamp = usage['timestamp'];
                 DateTime date = timestamp.toDate();
+                String goToLift = usage['goToLift'] ?? ''; // Get goToLift field
                 liftUsageData.add(LiftUsage(
                     date,
                     documentSnapshot['collegeID'],
                     1,
                     documentSnapshot['fullName'],
                     documentSnapshot['email'],
-                    documentSnapshot.id));
+                    documentSnapshot.id,
+                    goToLift)); // Pass goToLift to LiftUsage constructor
               }
             }
           } else {
@@ -74,11 +77,11 @@ class LiftUsage {
   final int usageCount;
   final String fullName;
   final String email;
-
   final String docId;
+  final String goToLift; // New field
 
   LiftUsage(this.timestamp, this.collegeID, this.usageCount, this.fullName,
-      this.email, this.docId);
+      this.email, this.docId, this.goToLift);
 }
 
 enum ChartType {

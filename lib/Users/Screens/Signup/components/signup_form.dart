@@ -2,6 +2,7 @@ import 'package:Elivatme/Users/Screens/components/already_have_an_account_acheck
 import 'package:Elivatme/Users/Screens/Dashboard/dashboard_screen.dart';
 import 'package:Elivatme/Users/Screens/Login/login_screen.dart';
 import 'package:Elivatme/Users/Services/authentication_service.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -200,6 +201,12 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (user != null) {
                       await saveUserDataToFirestore(
                           user.uid, email, fullName, collegeID);
+                      await saveUserDataToRealtimeDB(
+                        email,
+                        fullName,
+                        collegeID,
+                        user.uid,
+                      );
                       Fluttertoast.showToast(
                           msg: "User is Successfully Created");
                       Navigator.pushReplacement(
@@ -286,6 +293,52 @@ class _SignUpFormState extends State<SignUpForm> {
       });
     } catch (error) {
       print('Error saving user data to Firestore: $error');
+    }
+  }
+
+  Future<void> saveUserDataToRealtimeDB(
+    String email,
+    String fullName,
+    num collegeID,
+    String docId,
+  ) async {
+    try {
+      // Sanitize email for Realtime Database key
+      String sanitizedEmail = email.replaceAll('.', '_');
+
+      // Save data to 'app_users' node
+      DatabaseReference appUserRef = FirebaseDatabase.instance
+          .reference()
+          .child('app_users')
+          .child(sanitizedEmail);
+
+      await appUserRef.set({
+        'email': email,
+        'fullName': fullName,
+        'collegeID': collegeID,
+        'uid': docId,
+        'role': 'user', // Set default role here
+        'liftUsage': [], // Initialize lift usage as an empty list
+      });
+
+      // Save the same data to 'users' node
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(sanitizedEmail);
+
+      await userRef.set({
+        'email': email,
+        'fullName': fullName,
+        'collegeID': collegeID,
+        'uid': docId,
+        'role': 'user', // Set default role here
+        'liftUsage': [], // Initialize lift usage as an empty list
+      });
+
+      print('User data saved to Realtime Database successfully');
+    } catch (error) {
+      print('Error saving user data to Realtime Database: $error');
     }
   }
 }
