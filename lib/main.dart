@@ -45,8 +45,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/', // Set the initial route to '/'
       routes: {
         '/': (context) => WelcomeScreen(),
-                // '/': (context) => IpAddress(),
-
+        // '/': (context) => IpAddress(),
 
         // '/': (context) => WelcomeScreen(),
         '/My Profile': (context) => ProfileWidget(
