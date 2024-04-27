@@ -209,6 +209,17 @@ class AddUserDialog extends StatelessWidget {
         'uid': uid,
         'liftUsage': [], // Initialize lift usage as an empty list
       });
+      // Save data to 'app_users' firestore collection
+      await FirebaseFirestore.instance
+          .collection('app_users')
+          .doc(documentID)
+          .set({
+        'email': email,
+        'fullName': fullName,
+        'collegeID': collegeID,
+        'uid': uid,
+        'role': role, // Set default role here
+      });
 
       // Sanitize email for Realtime Database key
       String sanitizedEmail = email.replaceAll('.', '_');
@@ -237,7 +248,6 @@ class AddUserDialog extends StatelessWidget {
         'collegeID': collegeID,
         'uid': uid,
         'role': role, // Set default role here
-        'liftUsage': [], // Initialize lift usage as an empty list
       });
 
       Fluttertoast.showToast(msg: 'User added successfully');
@@ -327,32 +337,78 @@ class AddUserDialog extends StatelessWidget {
       if (querySnapshot.docs.isNotEmpty) {
         // Document ID found, get first document
         DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+        // Get current lift usage list
+        dynamic data = documentSnapshot.data();
+        if (data != null && data.containsKey('liftUsage')) {
+          List<dynamic> currentUsage = data['liftUsage'];
 
-        // Sanitize email for Realtime Database key
-        String sanitizedEmail = documentSnapshot['email'].replaceAll('.', '_');
+          // Get the length of currentUsage to determine the index for the new lift usage log
+          int newIndex = currentUsage.length;
 
-        // Get the current timestamp
-        DateTime now = DateTime.now();
-        String timestamp = '${now.hour}:${now.minute}:${now.second} '
-            '${now.day}/${now.month}/${now.year}';
+          // Add the new lift usage log to the end of the list
+          currentUsage.add({
+            'Traveled_to': goToLift,
+            'timestamp': Timestamp.now(),
+          });
 
-        // Add the lift usage to the user's node in Realtime Database
-        DatabaseReference userRef = FirebaseDatabase.instance
-            .reference()
-            .child('users')
-            .child(sanitizedEmail)
-            .child('liftUsage');
+          // Update the Firestore document with the modified lift usage list
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(documentSnapshot.id)
+              .update({
+            'liftUsage': currentUsage,
+          });
 
-        // Push the new entry to the lift usage array
-        await userRef.push().set({
-          'timestamp': timestamp,
-          'goToLift': goToLift,
-        });
+          Fluttertoast.showToast(
+              msg: "Lift usage logged successfully in Firestore");
 
-        // Update the current lift position in Realtime Database
-        updateRealtimeDBLiftPosition(goToLift);
+          // Sanitize email for Realtime Database key
+          String sanitizedEmail =
+              documentSnapshot['email'].replaceAll('.', '_');
 
-        Fluttertoast.showToast(msg: "Lift usage logged successfully");
+          // Get the current timestamp
+          DateTime now = DateTime.now();
+          String timestamp = '${now.hour}:${now.minute}:${now.second} '
+              '${now.day}/${now.month}/${now.year}';
+
+          // Add the lift usage to the user's node in Realtime Database
+          DatabaseReference userRef = FirebaseDatabase.instance
+              .reference()
+              .child('users')
+              .child(sanitizedEmail)
+              .child('liftUsage');
+
+          // Push the new entry to the lift usage array with the index as the key
+          await userRef.child(newIndex.toString()).set({
+            'timestamp': timestamp,
+            'goToLift': goToLift,
+          });
+
+          // Update the current lift position in Realtime Database
+          updateRealtimeDBLiftPosition(goToLift);
+          // Update the current lift position in Firestore
+          updateFirestoreLiftPosition(goToLift);
+
+          Fluttertoast.showToast(
+              msg: "Lift usage logged successfully in Realtime Database");
+        } else {
+          // If 'liftUsage' field does not exist, create it with the new lift usage
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(documentSnapshot.id)
+              .update({
+            'liftUsage': [
+              {
+                'Traveled_to': goToLift,
+                'timestamp': Timestamp.now(),
+              }
+            ],
+          });
+
+          Fluttertoast.showToast(
+              msg:
+                  "Lift usage logged successfully in Firestore with initial index");
+        }
       } else {
         Fluttertoast.showToast(msg: "Email not found");
       }
@@ -368,7 +424,11 @@ class AddUserDialog extends StatelessWidget {
         await FirebaseFirestore.instance
             .collection('current_lift')
             .doc('current_lift_position')
-            .update({'lift_position': liftPosition, 'timestamp': Timestamp.now()});
+            .update(
+                {'lift_position': liftPosition, 'timestamp': Timestamp.now()});
+        // Update the current lift position in Realtime Database
+        updateRealtimeDBLiftPosition(liftPosition);
+
         print('Firestore lift position updated: $liftPosition');
       }
     } catch (error) {
@@ -381,9 +441,10 @@ class AddUserDialog extends StatelessWidget {
       DatabaseReference liftRef =
           FirebaseDatabase.instance.reference().child('current_lift');
 
-      // Convert the timestamp to milliseconds since Unix epoch
-      int timestamp = Timestamp.now().millisecondsSinceEpoch;
-
+      // Convert the current timestamp to milliseconds since Unix epoch
+      DateTime now = DateTime.now();
+      String timestamp = '${now.hour}:${now.minute}:${now.second} '
+          '${now.day}/${now.month}/${now.year}';
       // Update the 'lift_position' and 'timestamp' fields
       liftRef.update({
         'lift_position': liftPosition,
