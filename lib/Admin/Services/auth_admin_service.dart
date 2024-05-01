@@ -17,7 +17,7 @@ class AuthenticationService {
       if (credential.user != null) {
         final userRole = await getUserRole(email);
         print('User role: $userRole'); // Print user role for debugging
-        if (userRole != 'user') {
+        if (userRole =='admin') {
           return credential.user;
         } else {
           Fluttertoast.showToast( msg: 'Do not have privillages to LogIn ');

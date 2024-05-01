@@ -157,7 +157,7 @@ class _LiftUsageLogScreenState extends State<LiftUsageLogScreen> {
                 },
               ),
               ListTile(
-                title: Text('College ID'),
+                title: Text('User Name'),
                 onTap: () {
                   setState(() {
                     _isSortedByDate = false;
@@ -202,7 +202,7 @@ class _LiftUsageLogScreenState extends State<LiftUsageLogScreen> {
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text('College ID: ${liftUsage.collegeID}',
+                    pw.Text('User Name: ${liftUsage.fullName}',
                         style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                     pw.Text(
                         'Timestamp: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(liftUsage.timestamp)}'),
@@ -264,7 +264,7 @@ class LiftUsageCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'College ID: ${liftUsage.collegeID}',
+                'User Name: ${liftUsage.fullName}',
                 style: TextStyle(
                     color: const Color.fromARGB(255, 255, 255, 255),
                     fontWeight: FontWeight.bold,

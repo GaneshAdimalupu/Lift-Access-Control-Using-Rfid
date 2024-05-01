@@ -23,8 +23,18 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Profile'),
+        title: Text(
+          'My Profile',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
+      extendBodyBehindAppBar: true,
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: FirebaseFirestore.instance
             .collection('app_users')
@@ -40,54 +50,72 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           final userData = snapshot.data!.data();
           final profileImageUrl = userData?['profileImageUrl'];
 
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: _editProfilePicture,
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    height: 150,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.blue, width: 2),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: profileImageUrl != null
-                            ? NetworkImage(profileImageUrl)
-                            : AssetImage('assets/placeholder_image.png')
-                                as ImageProvider<Object>,
-                        // Using 'as ImageProvider<Object>' to explicitly cast to ImageProvider<Object>
-                      ),
+          return Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/my_prof_back.png'),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black
+                          .withOpacity(0.5), // Adjust opacity here (0.0 - 1.0)
+                      BlendMode.darken, // Adjust blend mode as needed
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _deleteProfilePicture,
-                  child: _isLoading
-                      ? CircularProgressIndicator()
-                      : Text('Delete Profile Picture'),
+              ),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: _editProfilePicture,
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        height: 150,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.blue, width: 2),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: profileImageUrl != null
+                                ? NetworkImage(profileImageUrl)
+                                : AssetImage(
+                                    'default_profile.jpg',
+                                  ) as ImageProvider<Object>,
+                            // Using 'as ImageProvider<Object>' to explicitly cast to ImageProvider<Object>
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _deleteProfilePicture,
+                      child: _isLoading
+                          ? CircularProgressIndicator()
+                          : Text('Delete Profile Picture'),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Name: ${userData?['fullName'] ?? "Unknown"}',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Email: ${userData?['email'] ?? "Unknown"}',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'College ID: ${userData?['collegeID'] ?? "Unknown"}',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 16),
-                Text(
-                  'Name: ${userData?['fullName'] ?? "Unknown"}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Email: ${userData?['email'] ?? "Unknown"}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'College ID: ${userData?['collegeID'] ?? "Unknown"}',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
+              )
+            ],
           );
         },
       ),
