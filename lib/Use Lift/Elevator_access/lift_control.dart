@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class MonitoringPage extends StatefulWidget {
   final String ipAddress;
@@ -110,6 +113,38 @@ class _MonitoringPageState extends State<MonitoringPage> {
   }
 
   Future<void> _sendCommand(String command) async {
+    String lcdMessage;
+    String liftPosition;
+    switch (command) {
+      case "/control?id=G":
+        lcdMessage = "Moving Ground";
+        liftPosition = "Ground";
+        break;
+      case "/control?id=1":
+        lcdMessage = "Moving to 1st floor";
+        liftPosition = "1st floor";
+        break;
+      case "/control?id=2":
+        lcdMessage = "Moving to 2nd floor";
+        liftPosition = "2nd floor";
+        break;
+      case "/control?id=3":
+        lcdMessage = "Moving to 3rd floor";
+        liftPosition = "3rd floor";
+        break;
+      case "/control?id=4":
+        lcdMessage = "Moving to 4th floor";
+        liftPosition = "4th floor";
+        break;
+      case "/control?id=5":
+        lcdMessage = "Moving to 5th floor";
+        liftPosition = "5th floor";
+        break;
+      default:
+        lcdMessage = "";
+        liftPosition = "";
+    }
+
     try {
       final response = await http.get(
         Uri.parse('http://${widget.ipAddress}$command'),
@@ -117,6 +152,14 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
       if (response.statusCode == 200) {
         print('Command sent successfully: $command');
+        // Here you would update the LCD display with the lcdMessage
+        print('LCD Message: $lcdMessage');
+
+        // Update Firestore with the new lift position
+        await updateFirestoreLiftPosition(liftPosition);
+
+        // Update Realtime Database with the new lift position
+        updateRealtimeDBLiftPosition(liftPosition);
       } else {
         print('Failed to send command: ${response.statusCode}');
         // Handle error, possibly show a snackbar or dialog
@@ -124,6 +167,32 @@ class _MonitoringPageState extends State<MonitoringPage> {
     } catch (error) {
       print('Error sending command: $error');
       // Handle error, possibly show a snackbar or dialog
+    }
+  }
+
+  Future<void> updateFirestoreLiftPosition(String liftPosition) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('current_lift')
+            .doc('current_lift_position')
+            .set({'lift_position': liftPosition});
+        print('Firestore lift position updated: $liftPosition');
+      }
+    } catch (error) {
+      print('Error updating Firestore lift position: $error');
+    }
+  }
+
+  void updateRealtimeDBLiftPosition(String liftPosition) {
+    try {
+      DatabaseReference liftRef =
+          FirebaseDatabase.instance.reference().child('current_lift');
+      liftRef.update({'lift_position': liftPosition});
+      print('Realtime Database lift position updated: $liftPosition');
+    } catch (error) {
+      print('Error updating Realtime Database lift position: $error');
     }
   }
 }
